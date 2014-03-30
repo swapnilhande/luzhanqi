@@ -87,7 +87,7 @@ public class Play5500 {
         if (whoseTurn == player.getMyPlayerNumber()) {
             int[] movegame = player.getMove();
             if (movegame == null) {
-                System.out.println("( )");
+                System.out.println("(resign)");
             } else {
                 System.out.println(Utils.getMoveStringFromMove(movegame));
             }

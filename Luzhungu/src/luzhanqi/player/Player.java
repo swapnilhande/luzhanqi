@@ -52,18 +52,21 @@ public class Player {
         initializeBoard();
         setupPiecesOnBoard();
         this.hasMoved = new boolean[Constants.BOARD_SIZE];
-        /*this.canMove = new boolean[Constants.BOARD_SIZE]
-                [Constants.POSSIBLE_DIRECTIONS];*/
+        /*
+         * this.canMove = new boolean[Constants.BOARD_SIZE]
+         * [Constants.POSSIBLE_DIRECTIONS];
+         */
         initializeParams();
     }
-    
+
     /**
      * Stores opponents flag position
+     * 
      * @param xPos
      * @param yPos
      */
     public void storeOpponentFlag(int position) {
-       board[position].setPiece(Constants.PIECE_FLAG);
+        board[position].setPiece(Constants.PIECE_FLAG);
     }
 
     /**
@@ -243,6 +246,13 @@ public class Player {
                     if (canMove[i][direction]) {
                         int positionInDirection =
                                 Utils.getNextPosition(direction, i);
+                        if ((Utils.isCampPosition(positionInDirection) && board[positionInDirection]
+                                .getPiece() != Constants.PIECE_EMPTY)
+                                ||
+                                Utils.isNonMovablePiece(board[i].getPiece())
+                                || Utils.isHeadquarterPosition(i)) {
+                            continue;
+                        }
                         valuation = evaluateMove(i, positionInDirection);
                         if (isBetterValuation(valuation, bestValuation, i,
                                 positionInDirection)) {
@@ -317,13 +327,12 @@ public class Player {
         return boardString.toString();
     }
 
-    /*public static void main(String[] args) {
-        Player player = new Player(2);
-        System.out.println(player.getBoardString());
-        int[] move = player.getMove();
-        System.out.println(move[0] + "->" + move[1]);
-//        System.out.println(player.getBoardString());
-    }*/
+    /*
+     * public static void main(String[] args) { Player player = new Player(2);
+     * System.out.println(player.getBoardString()); int[] move =
+     * player.getMove(); System.out.println(move[0] + "->" + move[1]); //
+     * System.out.println(player.getBoardString()); }
+     */
 
     /**
      * Stores the move, and updates the board config
