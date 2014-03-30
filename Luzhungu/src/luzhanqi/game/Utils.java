@@ -371,7 +371,7 @@ public class Utils {
          initialMove.append("( ");
          for (int i = Constants.PLAYER_A_START; i <= Constants.PLAYER_A_END; i++) {
              int piece = board[i].getPiece();
-             if (piece < 12) {
+             if (piece > 1) {
                  initialMove.append("( ");
                  initialMove.append(getPositionNameFromIndex(i));
                  initialMove.append(" ");

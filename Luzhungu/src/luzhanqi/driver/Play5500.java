@@ -105,6 +105,7 @@ public class Play5500 {
         // initialize game and send out initial config
         String playerNumber = SyntaxParser.getFirstTurn(inputCommand);
         player = new Player(Integer.parseInt(playerNumber));
+        System.out.println(Utils.getInitialConfig(player.getBoard()));
         return player;
     }
 
