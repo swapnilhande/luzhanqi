@@ -246,13 +246,6 @@ public class Player {
                     if (canMove[i][direction]) {
                         int positionInDirection =
                                 Utils.getNextPosition(direction, i);
-                        if ((Utils.isCampPosition(positionInDirection) && board[positionInDirection]
-                                .getPiece() != Constants.PIECE_EMPTY)
-                                ||
-                                Utils.isNonMovablePiece(board[i].getPiece())
-                                || Utils.isHeadquarterPosition(i)) {
-                            continue;
-                        }
                         valuation = evaluateMove(i, positionInDirection);
                         if (isBetterValuation(valuation, bestValuation, i,
                                 positionInDirection)) {
@@ -422,33 +415,38 @@ public class Player {
 
     private void changeCanMoveInDirection(int thisPosition, int direction,
             int nextPosition, int oppDirection) {
-        if (board[thisPosition].getOwner() != board[nextPosition]
-                .getOwner()) {
-            if (Utils.isCampPosition(nextPosition)) {
-                if (Constants.PIECE_EMPTY != board[nextPosition]
-                        .getPiece()) {
-                    canMove[thisPosition][direction] = false;
-                    canMove[nextPosition][oppDirection] = true;
-                } else {
-                    canMove[thisPosition][direction] = true;
-                    canMove[nextPosition][oppDirection] = false;
-                }
-            } else if (Utils.isCampPosition(thisPosition)) {
-                if (Constants.PIECE_EMPTY != board[thisPosition]
-                        .getPiece()) {
-                    canMove[thisPosition][direction] = true;
-                    canMove[nextPosition][oppDirection] = false;
-                } else {
-                    canMove[thisPosition][direction] = false;
-                    canMove[nextPosition][oppDirection] = true;
-                }
-            } else {
-                canMove[thisPosition][direction] = true;
-                canMove[nextPosition][oppDirection] = true;
-            }
-        } else {
+        if (board[thisPosition].getOwner() == myNumber
+                && board[nextPosition].getOwner() == myNumber) {
+            // Care only about my pieces
             canMove[thisPosition][direction] = false;
             canMove[nextPosition][oppDirection] = false;
+        }else if (board[thisPosition].getOwner() == myNumber) {
+            modifyMyPieceMoveStatus(thisPosition, direction, nextPosition);
+        }else if (board[nextPosition].getOwner() == myNumber){
+            modifyMyPieceMoveStatus(nextPosition, oppDirection, thisPosition);
+        }
+    }
+
+    private void modifyMyPieceMoveStatus(int thisPosition, int direction,
+            int nextPosition) {
+        if(board[nextPosition].getPiece() == Constants.PIECE_EMPTY) {
+            // Next piece is empty, check if our piece can move
+            if (!Utils.isNonMovablePiece(board[thisPosition].getPiece())
+                && !Utils.isHeadquarterPosition(thisPosition)) {
+                canMove[thisPosition][direction] = true;
+            } else {
+                canMove[thisPosition][direction] = false;
+            }
+        } else {
+            // next piece is opponent, check if it is camp and our piece 
+            // can move
+            if (!Utils.isCampPosition(nextPosition)
+                && !Utils.isNonMovablePiece(board[thisPosition].getPiece())
+                && !Utils.isHeadquarterPosition(thisPosition)) {
+                canMove[thisPosition][direction] = true;
+            } else {
+                canMove[thisPosition][direction] = false;
+            }
         }
     }
 
