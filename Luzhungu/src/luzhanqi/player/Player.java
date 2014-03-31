@@ -412,7 +412,19 @@ public class Player {
                     oppDirection);
         }
     }
-
+    
+    public int[][] getRailMoves (int fromPosition) {
+        int[][] railMoves = null;
+        if (Utils.isOnRail(fromPosition)) {
+            // Position is on rail, so calculate rail moves
+            // Get moves going above
+            // Get moves going below
+            // Get moves going right
+            // Get moves going left
+        }
+        return railMoves;
+    }
+    
     private void changeCanMoveInDirection(int thisPosition, int direction,
             int nextPosition, int oppDirection) {
         if (board[thisPosition].getOwner() == myNumber

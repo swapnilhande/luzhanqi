@@ -49,15 +49,16 @@ public class Utils {
                 || position == 38 || position == 42 || position == 46
                 || position == 48);
     }
-    
+
     /**
      * Is the given position the headquarter position?
+     * 
      * @param position
      * @return
      */
     public static boolean isHeadquarterPosition(int position) {
-       return (position == 1 || position == 3 || position == 58 
-             || position == 56);
+        return (position == 1 || position == 3 || position == 58
+        || position == 56);
     }
 
     /**
@@ -68,8 +69,8 @@ public class Utils {
      */
     public static boolean isNonMovablePiece(int piece) {
         return (Constants.PIECE_FLAG == piece
-        || Constants.PIECE_LANDMINE == piece 
-        || Constants.PIECE_EMPTY == piece);
+                || Constants.PIECE_LANDMINE == piece
+                || Constants.PIECE_EMPTY == piece);
     }
 
     /**
@@ -80,7 +81,7 @@ public class Utils {
      * @return
      */
     public static boolean isTopAvailable(int xPos, int yPos) {
-        int position = xPos + 5 * yPos;
+        int position = getIndexFromCoordinates(xPos, yPos);
         return (yPos > 0) && (position != 31 && position != 33);
     }
 
@@ -92,8 +93,12 @@ public class Utils {
      * @return
      */
     public static boolean isBottomAvailable(int xPos, int yPos) {
-        int position = xPos + 5 * yPos;
+        int position = getIndexFromCoordinates(xPos, yPos);
         return (yPos < 11) && (position != 26 && position != 28);
+    }
+
+    public static int getIndexFromCoordinates(int xPos, int yPos) {
+        return xPos + 5 * yPos;
     }
 
     /**
@@ -126,7 +131,7 @@ public class Utils {
      * @return
      */
     public static boolean isTopRightAvailable(int xPos, int yPos) {
-        int position = xPos + 5 * yPos;
+        int position = getIndexFromCoordinates(xPos, yPos);
         return (xPos < 4 && yPos > 0)
                 && (position != 5 && position != 6 && position != 7
                         && position != 8 && position != 10 && position != 12
@@ -148,7 +153,7 @@ public class Utils {
      * @return
      */
     public static boolean isBottomLeftAvailable(int xPos, int yPos) {
-        int position = xPos + 5 * yPos;
+        int position = getIndexFromCoordinates(xPos, yPos);
         return (xPos > 0 && yPos < 11)
                 && (position != 1 && position != 2 && position != 3
                         && position != 4 && position != 6 && position != 8
@@ -170,7 +175,7 @@ public class Utils {
      * @return
      */
     public static boolean isBottomRightAvailable(int xPos, int yPos) {
-        int position = xPos + 5 * yPos;
+        int position = getIndexFromCoordinates(xPos, yPos);
         return (xPos < 4 && yPos < 11)
                 && (position != 0 && position != 1 && position != 2
                         && position != 3 && position != 6 && position != 8
@@ -192,7 +197,7 @@ public class Utils {
      * @return
      */
     public static boolean isTopLeftAvailable(int xPos, int yPos) {
-        int position = xPos + 5 * yPos;
+        int position = getIndexFromCoordinates(xPos, yPos);
         return (xPos > 0 && yPos > 0)
                 && (position != 6 && position != 7 && position != 8
                         && position != 9 && position != 12 && position != 14
@@ -289,107 +294,172 @@ public class Utils {
             return -1;
         }
     }
-    
+
     /**
      * Returns the index on the board based on the position name
+     * 
      * @param index
      * @return
      */
     public static String getPositionNameFromIndex(int index) {
-         String[] xPositions = { "E", "D", "C", "B", "A" };
-         Integer xPos = index % 5;
-         Integer yPos = index / 5 + 1;
-         return xPositions[xPos] + yPos.toString();
-     }
-    
+        String[] xPositions = { "E", "D", "C", "B", "A" };
+        Integer xPos = index % 5;
+        Integer yPos = index / 5 + 1;
+        return xPositions[xPos] + yPos.toString();
+    }
+
     /**
      * Get the result outcome from the outcome command given by referee
+     * 
      * @param command
      * @return
      */
     public static int getResultOutcomeFromOutcomeCommand(String command) {
-         String compare = SyntaxParser.getOutcomeCompare(command);
-         if (compare.equals("=")) {
-             return Constants.RESULT_DRAW;
-         }
-         if (compare.equals(">")) {
-             return Constants.RESULT_WON;
-         }
-         if (compare.equals("<")) {
-             return Constants.RESULT_DEFEATED;
-         }
-         return Constants.RESULT_NONE;
-     }
-    
+        String compare = SyntaxParser.getOutcomeCompare(command);
+        if (compare.equals("=")) {
+            return Constants.RESULT_DRAW;
+        }
+        if (compare.equals(">")) {
+            return Constants.RESULT_WON;
+        }
+        if (compare.equals("<")) {
+            return Constants.RESULT_DEFEATED;
+        }
+        return Constants.RESULT_NONE;
+    }
+
     /**
      * Get the move from the outcome command given by the referee
+     * 
      * @param command
      * @return
      * @throws Exception
      */
     public static int[] getMoveFromOutcomeCommand(String command)
-             throws Exception {
-         String moveString = SyntaxParser.getOutcomeMove(command);
-         String firstPosition = SyntaxParser.getFirstPosition(moveString);
-         String secondPosition = SyntaxParser.getSecondPosition(moveString);
-         int fromMove = getIndexFromPositionName(firstPosition);
-         int toMove = getIndexFromPositionName(secondPosition);
-         int[] move = { fromMove, toMove };
-         return move;
-     }
-    
+            throws Exception {
+        String moveString = SyntaxParser.getOutcomeMove(command);
+        String firstPosition = SyntaxParser.getFirstPosition(moveString);
+        String secondPosition = SyntaxParser.getSecondPosition(moveString);
+        int fromMove = getIndexFromPositionName(firstPosition);
+        int toMove = getIndexFromPositionName(secondPosition);
+        int[] move = { fromMove, toMove };
+        return move;
+    }
+
+    // TODO refactor all statements getting xpos and ypos
+
     /**
      * Based on the position name string, gets the index on board
+     * 
      * @param positionName
      * @return
      */
     public static int getIndexFromPositionName(String positionName) {
-         int xPos = ('E' - (char) positionName.charAt(0));
-         int yPos = Integer.parseInt(positionName.substring(1)) - 1;
-         int move = xPos + 5 * yPos;
-         return move;
-     }
+        int xPos = ('E' - (char) positionName.charAt(0));
+        int yPos = Integer.parseInt(positionName.substring(1)) - 1;
+        int move = getIndexFromCoordinates(xPos, yPos);
+        return move;
+    }
 
     /**
      * Get the move string e.g (A1 B1) from move
-     * @param move (from, to)
+     * 
+     * @param move
+     *            (from, to)
      * @return
      */
     public static String getMoveStringFromMove(int[] move) {
-         int initialSquare = move[0];
-         int targetSquare = move[1];
-         return "( " + getPositionNameFromIndex(initialSquare) + " "
-                 + getPositionNameFromIndex(targetSquare) + " )";
-     }
-    
+        int initialSquare = move[0];
+        int targetSquare = move[1];
+        return "( " + getPositionNameFromIndex(initialSquare) + " "
+                + getPositionNameFromIndex(targetSquare) + " )";
+    }
+
     /**
      * Returns the initial configuration string based on the saved config
+     * 
      * @return
      */
     public static String getInitialConfig(Square[] board) {
-         StringBuilder initialMove = new StringBuilder();
-         initialMove.append("( ");
-         for (int i = Constants.PLAYER_A_START; i <= Constants.PLAYER_A_END; i++) {
-             int piece = board[i].getPiece();
-             if (piece > 1) {
-                 initialMove.append("( ");
-                 initialMove.append(getPositionNameFromIndex(i));
-                 initialMove.append(" ");
-                 initialMove.append(getPieceFromRank(piece));
-                 initialMove.append(" )");
-             }
-         }
-         initialMove.append(" )");
-         return initialMove.toString();
-     }
+        StringBuilder initialMove = new StringBuilder();
+        initialMove.append("( ");
+        for (int i = Constants.PLAYER_A_START; i <= Constants.PLAYER_A_END; i++) {
+            int piece = board[i].getPiece();
+            if (piece > 1) {
+                initialMove.append("( ");
+                initialMove.append(getPositionNameFromIndex(i));
+                initialMove.append(" ");
+                initialMove.append(getPieceFromRank(piece));
+                initialMove.append(" )");
+            }
+        }
+        initialMove.append(" )");
+        return initialMove.toString();
+    }
+
+    public static boolean isOnRail(int position) {
+        int xPos = Utils.getXPosition(position);
+        int yPos = Utils.getYPosition(position);
+        if (!(xPos >= 0 && xPos <= 4 && yPos >= 0 && yPos <= 11)) {
+            return false;
+        }
+        return (yPos == 1 || yPos == 5 || yPos == 6 || yPos == 10
+                || (xPos == 0 && yPos > 0 && yPos < 11)
+                || (xPos == 4 && yPos > 0 && yPos < 11)
+                || (xPos == 2 && yPos > 4 && yPos < 7));
+    }
+
+    public static int getLeftmostPositionOnRail(int fromPosition,
+            int myPlayerNumber, int hisPlayerNumber, Square[] board) {
+        int leftMostPosition = -1;
+        int xPos = getXPosition(fromPosition);
+        int yPos = getYPosition(fromPosition);
+        for (int i = xPos - 1; i >= 0; i--) {
+            if (Constants.PIECE_EMPTY == board[i].getPiece()) {
+                leftMostPosition = i;
+                continue;
+            } else if (board[i].getOwner() == myPlayerNumber) {
+                break;
+            } else if (board[i].getOwner() == hisPlayerNumber) {
+                leftMostPosition = i;
+                break;
+            }
+        }
+        if (-1 == leftMostPosition) {
+            return -1;
+        }
+        return getIndexFromCoordinates(leftMostPosition, yPos);
+    }
     
+    public static int getRightmostPositionOnRail(int fromPosition,
+            int myPlayerNumber, int hisPlayerNumber, Square[] board) {
+        int rightMostPosition = -1;
+        int xPos = getXPosition(fromPosition);
+        int yPos = getYPosition(fromPosition);
+        for (int i = xPos + 1; i <= 4; i++) {
+            if (Constants.PIECE_EMPTY == board[i].getPiece()) {
+                rightMostPosition = i;
+                continue;
+            } else if (board[i].getOwner() == myPlayerNumber) {
+                break;
+            } else if (board[i].getOwner() == hisPlayerNumber) {
+                rightMostPosition = i;
+                break;
+            }
+        }
+        if (-1 == rightMostPosition) {
+            return -1;
+        }
+        return getIndexFromCoordinates(rightMostPosition, yPos);
+    }
+
     /**
      * Initial configuration
      * 
      * @return
      */
     public static int[] getInitialSetup() {
-        int[] pieces = { 
+        int[] pieces = {
                 Constants.PIECE_LIEUTENANT, // A1
                 Constants.PIECE_LANDMINE, // B1
                 Constants.PIECE_CAPTAIN, // C1
