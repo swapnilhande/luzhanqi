@@ -15,7 +15,6 @@ import luzhanqi.player.Player;
 
 public class Play5500 {
     public static String logFile = "logFile.txt";
-    public static boolean isLogEnabled = false;
     static Player player = null;
     static MoveGenerator moveGenerator = null;
 
@@ -96,7 +95,6 @@ public class Play5500 {
     /**
      * Gets our move based on the current board configuration
      * 
-     * @param player
      * @param inputCommand
      */
     private static void makeOurMove(String inputCommand) {
