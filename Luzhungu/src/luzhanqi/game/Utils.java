@@ -4,42 +4,80 @@ import luzhanqi.grammar.SyntaxParser;
 
 public class Utils {
 
-    // Methods to get required direction indexes
+    /**
+     * Returns the left position of the given position
+     * @param position
+     * @return
+     */
     public static int getLeftOfPosition(int position) {
         return position - 1;
     }
 
+    /**
+     * Returns the right position of the given position
+     * @param position
+     * @return
+     */
     public static int getRightOfPosition(int position) {
         return position + 1;
     }
 
+    /**
+     * Returns the top position of the given position
+     * @param position
+     * @return
+     */
     public static int getTopOfPosition(int position) {
         return position - 5;
     }
 
+    /**
+     * Returns the bottom position of the given position
+     * @param position
+     * @return
+     */
     public static int getBottomOfPosition(int position) {
         return position + 5;
     }
 
+    /**
+     * Returns the top right position of the given position
+     * @param position
+     * @return
+     */
     public static int getTopRightOfPosition(int position) {
         return position - 4;
     }
 
+    /**
+     * Returns the bottom right position of the given position
+     * @param position
+     * @return
+     */
     public static int getBottomRightOfPosition(int position) {
         return position + 6;
     }
 
+    /**
+     * Returns the top left position of the given position
+     * @param position
+     * @return
+     */
     public static int getTopLeftOfPosition(int position) {
         return position - 6;
     }
 
+    /**
+     * Returns the bottom left position of the given position
+     * @param position
+     * @return
+     */
     public static int getBottomLeftOfPosition(int position) {
         return position + 4;
     }
 
     /**
      * Is the given position a camp position?
-     * 
      * @param position
      * @return
      */
@@ -52,7 +90,6 @@ public class Utils {
 
     /**
      * Is the given position the headquarter position?
-     * 
      * @param position
      * @return
      */
@@ -63,7 +100,6 @@ public class Utils {
     
     /**
      * Is the given position the enemy headquarter position?
-     * 
      * @param position
      * @return
      */
@@ -73,7 +109,6 @@ public class Utils {
 
     /**
      * Is the piece immovable?
-     * 
      * @param piece
      * @return
      */
@@ -85,7 +120,6 @@ public class Utils {
 
     /**
      * Is top direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -97,7 +131,6 @@ public class Utils {
 
     /**
      * Is bottom direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -107,7 +140,12 @@ public class Utils {
         return (yPos < 11) && (position != 26 && position != 28);
     }
 
-    // Get board index from the given xposition and yposition
+    /**
+     * Get board index from the given xposition and yposition
+     * @param xPos
+     * @param yPos
+     * @return
+     */
     public static int getIndexFromCoordinates(int xPos, int yPos) {
         return xPos + 5 * yPos;
     }
@@ -222,23 +260,30 @@ public class Utils {
                         && position != 59);
     }
 
-    /*
+    /**
      * Returns the xposition from the given index of board
+     * @param squareIndex
+     * @return
      */
     public static int getXPosition(int squareIndex) {
         return squareIndex % 5;
     }
 
-    /*
+    /**
      * Returns the yposition from the given index of board
+     * @param squareIndex
+     * @return
      */
     public static int getYPosition(int squareIndex) {
         return squareIndex / 5;
     }
 
-    /*
+    /**
      * Returns true if we can move in the given direction from
      * the given position, else returns false
+     * @param direction
+     * @param position
+     * @return
      */
     public static boolean isDirectionAvailable(int direction, int position) {
         int xPos = Utils.getXPosition(position);
@@ -270,7 +315,7 @@ public class Utils {
         return false;
     }
 
-    /*
+    /**
      * Returns the next position in the given direction from
      * the given position
      */
@@ -297,7 +342,7 @@ public class Utils {
         }
     }
 
-    /*
+    /**
      * Returns the next position in rail, in the given direction and
      * position, returns -1 if move not possible
      */
@@ -321,7 +366,7 @@ public class Utils {
         }
     }
 
-    /*
+    /**
      * Returns the opposite direction of the given direction
      */
     public static int getInverseDirection(int direction) {
@@ -415,8 +460,7 @@ public class Utils {
     /**
      * Get the move string e.g (A1 B1) from move
      * 
-     * @param move
-     *            (from, to)
+     * @param move(from, to)
      * @return
      */
     public static String getMoveStringFromMove(int[] move) {
@@ -434,7 +478,8 @@ public class Utils {
     public static String getInitialConfig(Square[] board) {
         StringBuilder initialMove = new StringBuilder();
         initialMove.append("( ");
-        for (int i = Constants.PLAYER_A_START; i <= Constants.PLAYER_A_END; i++) {
+        for (int i = Constants.PLAYER_A_START; 
+                i <= Constants.PLAYER_A_END; i++) {
             int piece = board[i].getPiece();
             if (piece > 1) {
                 initialMove.append("( ");
@@ -448,7 +493,7 @@ public class Utils {
         return initialMove.toString();
     }
 
-    /*
+    /**
      * Returns true if the given position is on rail,
      * else returns false
      */
@@ -464,7 +509,7 @@ public class Utils {
                 || (xPos == 2 && yPos > 4 && yPos < 7));
     }
 
-    /*
+    /**
      * Returns the distance between two given positions.
      */
     public static int getDistanceBetweenPositions(int from, int to) {
@@ -477,7 +522,7 @@ public class Utils {
         return distance;
     }
 
-    /*
+    /**
      * Returns true if the given position is enemy camp,
      * else returns false
      */
@@ -486,7 +531,7 @@ public class Utils {
                 || position == 46 || position == 48);
     }
 
-    /*
+    /**
      * Returns true if the given position is our camp position
      * else returns false
      */
@@ -495,7 +540,7 @@ public class Utils {
                 || position == 21 || position == 23);
     }
 
-    /*
+    /**
      * Returns the next left position on rail, returns -1
      * if move is not possible
      */
@@ -516,7 +561,7 @@ public class Utils {
         return nextLeftPosition;
     }
 
-    /*
+    /**
      * Returns the next right position on the rail
      * returns -1 if move is not possible
      */
@@ -537,7 +582,7 @@ public class Utils {
         return nextRightPosition;
     }
 
-    /*
+    /**
      * Returns the next top position on rail,
      * returns -1 is no move is possible
      */
@@ -558,7 +603,7 @@ public class Utils {
         return nextTopPosition;
     }
 
-    /*
+    /**
      * Returns the next bottom position on rail,
      * returns -1 if move is not possible
      */
@@ -579,7 +624,7 @@ public class Utils {
         return nextBottomPosition;
     }
 
-    /*
+    /**
      * Returns the next right position on the rail,
      * returns -1 if move is not possible
      */
@@ -613,35 +658,35 @@ public class Utils {
     public static int[] getInitialSetup() {
         int[] pieces = {
                 Constants.PIECE_LIEUTENANT, // A1
-                Constants.PIECE_LANDMINE, // B1
-                Constants.PIECE_CAPTAIN, // C1
-                Constants.PIECE_FLAG, // D1
-                Constants.PIECE_LIEUTENANT, // E1
+                Constants.PIECE_FLAG, // B1
+                Constants.PIECE_LIEUTENANT, // C1
+                Constants.PIECE_LIEUTENANT, // D1
+                Constants.PIECE_ENGINEER, // E1
                 Constants.PIECE_LANDMINE, // A2
-                Constants.PIECE_ENGINEER, // B2
+                Constants.PIECE_LANDMINE, // B2
                 Constants.PIECE_LANDMINE, // C2
-                Constants.PIECE_LIEUTENANT, // D2
-                Constants.PIECE_ENGINEER, // E2
+                Constants.PIECE_CAPTAIN, // D2
+                Constants.PIECE_MAJOR, // E2
                 Constants.PIECE_CAPTAIN, // A3
                 Constants.PIECE_EMPTY, // B3
                 Constants.PIECE_FIELDMARSHAL, // C3
                 Constants.PIECE_EMPTY, // D3
-                Constants.PIECE_ENGINEER, // E3
-                Constants.PIECE_BOMB, // A4
-                Constants.PIECE_GENERAL, // B4
+                Constants.PIECE_CAPTAIN, // E3
+                Constants.PIECE_GENERAL, // A4
+                Constants.PIECE_ENGINEER, // B4
                 Constants.PIECE_EMPTY, // C4
-                Constants.PIECE_MAJORGENERAL, // D4
+                Constants.PIECE_ENGINEER, // D4
                 Constants.PIECE_BOMB, // E4
-                Constants.PIECE_BRIGADIERGENERAL,// A5
+                Constants.PIECE_BOMB,// A5
                 Constants.PIECE_EMPTY, // B5
                 Constants.PIECE_MAJORGENERAL, // C5
                 Constants.PIECE_EMPTY, // D5
-                Constants.PIECE_CAPTAIN, // E5
-                Constants.PIECE_MAJOR, // A6
-                Constants.PIECE_BRIGADIERGENERAL,// B6
-                Constants.PIECE_COLONEL, // C6
+                Constants.PIECE_BRIGADIERGENERAL, // E5
+                Constants.PIECE_BRIGADIERGENERAL, // A6
+                Constants.PIECE_COLONEL,// B6
+                Constants.PIECE_MAJOR, // C6
                 Constants.PIECE_COLONEL, // D6
-                Constants.PIECE_MAJOR // E6
+                Constants.PIECE_MAJORGENERAL // E6
         };
         return pieces;
     }
@@ -687,7 +732,7 @@ public class Utils {
         }
     }
 
-    /*
+    /**
      * Returns true if both source and target are on rail,
      * else returns false
      */

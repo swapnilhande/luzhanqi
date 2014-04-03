@@ -52,7 +52,7 @@ public class Constants {
    
    // Weight params
    public static final int FIRST_MOVE = 0;
-   public static final int STILL_OPPONENT = 1;
+   public static final int ATTACK_UNKNOWN_OPPONENT = 1;
    public static final int BEAT_OPPONENT = 2;
    public static final int MOVE_FORWARD = 3;
    public static final int MOVE_RIGHT = 4;

@@ -2,18 +2,29 @@ package luzhanqi.game;
 
 public class Square {
 
-    // Rank of the piece on this square
+    /**
+     * Rank of the piece on this square
+     */
     private int piece;
-    // Owner of this piece
+    /**
+     * Owner of this piece
+     */
     private int owner;
 
-    // Should only be called for initializing empty pieces
+    /**
+     * Should only be called for initializing empty pieces
+     */
     public Square() {
         this.piece = Constants.PIECE_EMPTY;
         // Empty place has no owner
         this.owner = Constants.NO_ONE;
     }
 
+    /**
+     * To initialize a square with piece and owner other than Empty piece
+     * @param piece
+     * @param owner
+     */
     public Square(int piece, int owner) {
         this.piece = piece;
         this.owner = owner;

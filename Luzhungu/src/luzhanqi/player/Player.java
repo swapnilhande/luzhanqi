@@ -94,7 +94,8 @@ public class Player {
      */
     public void setupPiecesOnBoard() {
         int[] mySetup = Utils.getInitialSetup();
-        for (int squareIndex = Constants.PLAYER_A_START; squareIndex <= Constants.PLAYER_B_END; squareIndex++) {
+        for (int squareIndex = Constants.PLAYER_A_START; 
+                squareIndex <= Constants.PLAYER_B_END; squareIndex++) {
             if (Utils.isCampPosition(squareIndex)) {
                 putSquareOnBoard(new Square(), squareIndex);
             } else if (squareIndex <= Constants.PLAYER_A_END) {
@@ -119,60 +120,58 @@ public class Player {
         pieceParams = new double[Constants.PIECE_FIELDMARSHAL + 1][];
         for (int i = 0; i < pieceParams.length; i++) {
             pieceParams[i] = new double[Constants.KILL_INTRUDER + 1];
-            pieceParams[i][Constants.FIRST_MOVE] = (Math.random() - 0)
+            pieceParams[i][Constants.FIRST_MOVE] = (0.1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.STILL_OPPONENT] = (Math.random() - 0.5)
+            pieceParams[i][Constants.ATTACK_UNKNOWN_OPPONENT] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.BEAT_OPPONENT] = (Math.random() - 0.5)
+            pieceParams[i][Constants.BEAT_OPPONENT] = (2)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_FORWARD] = (Math.random() - 0)
+            pieceParams[i][Constants.MOVE_FORWARD] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_RIGHT] = (Math.random() - 0.5)
+            pieceParams[i][Constants.MOVE_RIGHT] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_BACKWARD] = (Math.random() - 0.8)
+            pieceParams[i][Constants.MOVE_BACKWARD] = (0.5)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_LEFT] = (Math.random() - 0.5)
+            pieceParams[i][Constants.MOVE_LEFT] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_TOP_LEFT] = (Math.random() - 0)
+            pieceParams[i][Constants.MOVE_TOP_LEFT] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_TOP_RIGHT] = (Math.random() - 0)
+            pieceParams[i][Constants.MOVE_TOP_RIGHT] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_BOTTOM_LEFT] = (Math.random() - 0.8)
+            pieceParams[i][Constants.MOVE_BOTTOM_LEFT] = (0.5)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.MOVE_BOTTOM_RIGHT] = (Math.random() - 0.8)
+            pieceParams[i][Constants.MOVE_BOTTOM_RIGHT] = (0.5)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.EXPLORATION_RATE] = (Math.random() - 0.5)
+            pieceParams[i][Constants.EXPLORATION_RATE] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
             pieceParams[i][Constants.RANDOM_INFLUENCE] = (Math.random() - 0.5)
                     * Constants.OPTION_PARAM_MULTIPLIER;
             // TODO: CHeck adding for rail moves
-            pieceParams[i][Constants.SLIDE_DOWN] = (Math.random() - 0.5)
+            pieceParams[i][Constants.SLIDE_DOWN] = (0.5)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.SLIDE_LEFT] = (Math.random() - 0.5)
+            pieceParams[i][Constants.SLIDE_LEFT] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.SLIDE_RIGHT] = (Math.random() - 0.5)
+            pieceParams[i][Constants.SLIDE_RIGHT] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.SLIDE_TOP] = (Math.random() - 0.5)
+            pieceParams[i][Constants.SLIDE_TOP] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.CAPTURE_FLAG] = (Math.random() - 0.5)
+            pieceParams[i][Constants.CAPTURE_FLAG] = (100)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.APPROACH_ENEMY_FLAG] = (Math.random() - 0.5)
+            pieceParams[i][Constants.APPROACH_ENEMY_FLAG] = (2)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.APPROACH_ENEMY_SAFE_ZONES] = (Math
-                    .random() - 0.5)
+            pieceParams[i][Constants.APPROACH_ENEMY_SAFE_ZONES] = (3)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.APPROACH_OUR_SAFE_ZONES] = (Math
-                    .random() - 0.5)
+            pieceParams[i][Constants.APPROACH_OUR_SAFE_ZONES] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.DEFUSE_MINE] = (Math.random() - 0.5)
+            pieceParams[i][Constants.DEFUSE_MINE] = (2)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.PROTECT_BASE] = (Math.random() - 0.5)
+            pieceParams[i][Constants.PROTECT_BASE] = (3)
                     * Constants.OPTION_PARAM_MULTIPLIER;
             pieceParams[i][Constants.CHEAP_PATRIOT] = (Math.random() - 0.5)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.BRAVE_PATRIOT] = (Math.random() - 0.5)
+            pieceParams[i][Constants.BRAVE_PATRIOT] = (50)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.KILL_INTRUDER] = (Math.random() - 0.5)
+            pieceParams[i][Constants.KILL_INTRUDER] = (5)
                     * Constants.OPTION_PARAM_MULTIPLIER;
         }
     }
@@ -183,7 +182,8 @@ public class Player {
     public String getBoardString() {
         StringBuilder boardString = new StringBuilder();
         boardString.append("|-----|-----|-----|-----|-----|\n");
-        for (int i = Constants.PLAYER_A_START; i <= Constants.PLAYER_B_END; i++) {
+        for (int i = Constants.PLAYER_A_START; 
+                i <= Constants.PLAYER_B_END; i++) {
             if (Utils.isCampPosition(i)) {
                 boardString.append("(");
             } else if (Utils.isCampPosition(i - 1)) {
@@ -275,7 +275,8 @@ public class Player {
         canMove[position] = new boolean[8];
         hasMoved[position] = true;
         // Update neighboring positions
-        for (int direction = Constants.TOP; direction <= Constants.DOWNRIGHT; direction++) {
+        for (int direction = Constants.TOP; 
+                direction <= Constants.DOWNRIGHT; direction++) {
             updatePossibleMovesAfterMove(position, direction);
         }
         if (Utils.isNonMovablePiece(square.getPiece())
