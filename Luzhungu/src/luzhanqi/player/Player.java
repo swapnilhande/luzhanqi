@@ -177,6 +177,9 @@ public class Player {
         }
     }
 
+    /*
+     * Returns the board in a nice readable way on board
+     */
     public String getBoardString() {
         StringBuilder boardString = new StringBuilder();
         boardString.append("|-----|-----|-----|-----|-----|\n");
@@ -203,13 +206,6 @@ public class Player {
         boardString.append("|-----|-----|-----|-----|-----|\n");
         return boardString.toString();
     }
-
-    /*
-     * public static void main(String[] args) { Player player = new Player(2);
-     * System.out.println(player.getBoardString()); int[] move =
-     * player.getMove(); System.out.println(move[0] + "->" + move[1]); //
-     * System.out.println(player.getBoardString()); }
-     */
 
     /**
      * Stores the move, and updates the board config
@@ -296,18 +292,6 @@ public class Player {
                     oppDirection);
         }
     }
-
-    // public int[][] getRailMoves(int fromPosition) {
-    // int[][] railMoves = null;
-    // if (Utils.isOnRail(fromPosition)) {
-    // // Position is on rail, so calculate rail moves
-    // // Get moves going above
-    // // Get moves going below
-    // // Get moves going right
-    // // Get moves going left
-    // }
-    // return railMoves;
-    // }
 
     private void changeCanMoveInDirection(int thisPosition, int direction,
             int nextPosition, int oppDirection) {

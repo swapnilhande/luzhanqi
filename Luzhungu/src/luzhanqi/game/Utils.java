@@ -107,6 +107,7 @@ public class Utils {
         return (yPos < 11) && (position != 26 && position != 28);
     }
 
+    // Get board index from the given xposition and yposition
     public static int getIndexFromCoordinates(int xPos, int yPos) {
         return xPos + 5 * yPos;
     }
@@ -221,14 +222,24 @@ public class Utils {
                         && position != 59);
     }
 
+    /*
+     * Returns the xposition from the given index of board
+     */
     public static int getXPosition(int squareIndex) {
         return squareIndex % 5;
     }
 
+    /*
+     * Returns the yposition from the given index of board
+     */
     public static int getYPosition(int squareIndex) {
         return squareIndex / 5;
     }
 
+    /*
+     * Returns true if we can move in the given direction from
+     * the given position, else returns false
+     */
     public static boolean isDirectionAvailable(int direction, int position) {
         int xPos = Utils.getXPosition(position);
         int yPos = Utils.getYPosition(position);
@@ -259,6 +270,10 @@ public class Utils {
         return false;
     }
 
+    /*
+     * Returns the next position in the given direction from
+     * the given position
+     */
     public static int getNextPosition(int direction, int position) {
         switch (direction) {
         case Constants.TOP:
@@ -282,6 +297,10 @@ public class Utils {
         }
     }
 
+    /*
+     * Returns the next position in rail, in the given direction and
+     * position, returns -1 if move not possible
+     */
     public static int getNextPositionOnRail(int direction, int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
         switch (direction) {
@@ -302,6 +321,9 @@ public class Utils {
         }
     }
 
+    /*
+     * Returns the opposite direction of the given direction
+     */
     public static int getInverseDirection(int direction) {
         switch (direction) {
         case Constants.TOP:
@@ -376,7 +398,6 @@ public class Utils {
         return move;
     }
 
-    // TODO refactor all statements getting xpos and ypos
 
     /**
      * Based on the position name string, gets the index on board
@@ -427,6 +448,10 @@ public class Utils {
         return initialMove.toString();
     }
 
+    /*
+     * Returns true if the given position is on rail,
+     * else returns false
+     */
     public static boolean isOnRail(int position) {
         int xPos = Utils.getXPosition(position);
         int yPos = Utils.getYPosition(position);
@@ -439,6 +464,9 @@ public class Utils {
                 || (xPos == 2 && yPos > 4 && yPos < 7));
     }
 
+    /*
+     * Returns the distance between two given positions.
+     */
     public static int getDistanceBetweenPositions(int from, int to) {
         int distance = 0;
         int fromX = getXPosition(from);
@@ -449,16 +477,28 @@ public class Utils {
         return distance;
     }
 
+    /*
+     * Returns true if the given position is enemy camp,
+     * else returns false
+     */
     public static boolean isEnemyCampPosition(int position) {
         return (position == 36 || position == 38 || position == 42
                 || position == 46 || position == 48);
     }
 
+    /*
+     * Returns true if the given position is our camp position
+     * else returns false
+     */
     public static boolean isOurCampPosition(int position) {
         return (position == 11 || position == 13 || position == 17
                 || position == 21 || position == 23);
     }
 
+    /*
+     * Returns the next left position on rail, returns -1
+     * if move is not possible
+     */
     public static int getNextLeftPositionOnRail(int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
         int nextLeftPosition = -1;
@@ -476,6 +516,10 @@ public class Utils {
         return nextLeftPosition;
     }
 
+    /*
+     * Returns the next right position on the rail
+     * returns -1 if move is not possible
+     */
     public static int getNextRightPositionOnRail(int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
         int nextRightPosition = -1;
@@ -493,6 +537,10 @@ public class Utils {
         return nextRightPosition;
     }
 
+    /*
+     * Returns the next top position on rail,
+     * returns -1 is no move is possible
+     */
     public static int getNextTopPositionOnRail(int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
         int nextTopPosition = -1;
@@ -510,6 +558,10 @@ public class Utils {
         return nextTopPosition;
     }
 
+    /*
+     * Returns the next bottom position on rail,
+     * returns -1 if move is not possible
+     */
     public static int getNextBottomPositionOnRail(int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
         int nextBottomPosition = -1;
@@ -527,6 +579,10 @@ public class Utils {
         return nextBottomPosition;
     }
 
+    /*
+     * Returns the next right position on the rail,
+     * returns -1 if move is not possible
+     */
     public static int getRightmostPositionOnRail(int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
         int rightMostPosition = -1;
@@ -631,6 +687,10 @@ public class Utils {
         }
     }
 
+    /*
+     * Returns true if both source and target are on rail,
+     * else returns false
+     */
     public static boolean moveOnRailPossible(int source, int target) {
         return isOnRail(source)
                 && isOnRail(target);

@@ -6,7 +6,13 @@ import luzhanqi.player.Player;
 
 public class MoveGenerator {
 
+    /*
+     * Player whose move is to be calculated
+     */
     Player player;
+    /*
+     * Best move that should be made given the board setup
+     */
     Move bestMove;
 
     public static final double MARGIN = 0.1;
@@ -171,6 +177,10 @@ public class MoveGenerator {
         }
     }
 
+    /*
+     * Returns true if next position on rail is not -1
+     * or if it is occupied by our player, else false
+     */
     private boolean isNextOnRailValid(int pos)
     {
         return (-1 == pos

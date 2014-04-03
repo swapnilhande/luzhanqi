@@ -2,8 +2,17 @@ package luzhanqi.play;
 
 public class Move {
 
+    /*
+     * From position of the move
+     */
 	int fromIndex;
+	/*
+	 * To position of the move
+	 */
 	int toIndex;
+	/*
+	 * evaluation of the move as per weights
+	 */
 	double evalution;
 	
 	public Move(int fromIndex, int toIndex, double evalution) {
