@@ -3,7 +3,7 @@ package luzhanqi.game;
 public class Constants {
    
    // Logistics
-   public static final boolean LOGGING_ENABLED = true;
+   public static final boolean LOGGING_ENABLED = false;
    
    // Players
    public static final int PLAYER_A = 1;

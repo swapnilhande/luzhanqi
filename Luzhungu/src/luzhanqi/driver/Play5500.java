@@ -110,7 +110,7 @@ public class Play5500 {
                     if(movegame == null) {
                         bw.write("\nMove: resign");
                     }else{
-                        bw.write("\nMove: " + movegame[0] + " -> " + movegame[1]);
+                        bw.write("\nMove: "+movegame[0] + " -> "+movegame[1]);
                     }
                     bw.close();
                 } catch (IOException e) {
