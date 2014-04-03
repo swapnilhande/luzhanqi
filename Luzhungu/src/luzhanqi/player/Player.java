@@ -6,11 +6,36 @@ import luzhanqi.game.Utils;
 
 public class Player {
 
+    /**
+     * Number assigned by referee to game playing program
+     */
     private int myNumber;
+    /**
+     * Number assigned by referee to opponent
+     */
     private int hisNumber;
+    /**
+     * Array of 60 square position to represent
+     * Luzhanqi's board configuration.
+     * Index represents the position,
+     * and value represent the piece
+     */
     private Square[] board;
+    /**
+     * Array of 60 positions with 8 directions which takes either
+     * true/false. True indicates piece has moved. False
+     * indicates piece has moved from that position
+     */
     private boolean[][] canMove;
+    /**
+     * Array of 60 positions which states if the piece on
+     * that position has ever moved
+     */
     private boolean[] hasMoved;
+    /**
+     * Time alloted to return the Move
+     */
+    private double time;
     /**
      * How often we've been moving back and forth between lastMoveFrom and
      * lastMoveTo
@@ -38,17 +63,23 @@ public class Player {
     public static final int MOVE_BOTTOM_LEFT = 10;
     public static final int EXPLORATION_RATE = 11;
     public static final int RANDOM_INFLUENCE = 12;
+    public static final int SLIDE_LEFT = 13;
+    public static final int SLIDE_RIGHT = 14;
+    public static final int SLIDE_TOP = 15;
+    public static final int SLIDE_DOWN = 16;
+    public static final int CAPTURE_FLAG = 17;
     public static final int OPTION_PARAM_MULTIPLIER = 4;
 
     private double[][] pieceParams;
 
-    public Player(int playerNumber) {
+    public Player(int playerNumber, Double time) {
         this.myNumber = playerNumber;
         this.hisNumber = getOtherPlayerNumber(playerNumber);
         this.board = new Square[Constants.BOARD_SIZE];
         this.hasMoved = new boolean[Constants.BOARD_SIZE];
         this.canMove = new boolean[Constants.BOARD_SIZE]
                 [Constants.POSSIBLE_DIRECTIONS];
+        this.time = time;
         initializeBoard();
         setupPiecesOnBoard();
         this.hasMoved = new boolean[Constants.BOARD_SIZE];
@@ -108,7 +139,7 @@ public class Player {
     public void initializeParams() {
         pieceParams = new double[Constants.PIECE_FIELDMARSHAL + 1][];
         for (int i = 0; i < pieceParams.length; i++) {
-            pieceParams[i] = new double[RANDOM_INFLUENCE + 1];
+            pieceParams[i] = new double[CAPTURE_FLAG + 1];
             pieceParams[i][FIRST_MOVE] = (Math.random() - 0)
                     * OPTION_PARAM_MULTIPLIER;
             pieceParams[i][STILL_OPPONENT] = (Math.random() - 0.5)
@@ -135,177 +166,34 @@ public class Player {
                     * OPTION_PARAM_MULTIPLIER;
             pieceParams[i][RANDOM_INFLUENCE] = (Math.random() - 0.5)
                     * OPTION_PARAM_MULTIPLIER;
+            // TODO: CHeck adding for rail moves
+            pieceParams[i][SLIDE_DOWN] = (Math.random() - 0.5)
+                    * OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][SLIDE_LEFT] = (Math.random() - 0.5)
+                    * OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][SLIDE_RIGHT] = (Math.random() - 0.5)
+                    * OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][SLIDE_TOP] = (Math.random() - 0.5)
+                    * OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][CAPTURE_FLAG] = (Math.random() - 0.5)
+                    * OPTION_PARAM_MULTIPLIER;
         }
     }
 
-    /**
-     * Evaluate the move, add weights accordingly and then see which move is
-     * the best
-     * 
-     * @param from
-     * @param to
-     * @return
-     */
-    public double evaluateMove(int from, int to) {
-
-        double valuation = 0;
-        // Add a penalty if your piece has moved (gives away that it is not a
-        // bomb)
-        int myPiece = board[from].getPiece();
-        if (!hasMoved[from]) {
-            // TODO Increase this value when there are fewer pieces left that
-            // have not moved yet
-            valuation += pieceParams[myPiece][FIRST_MOVE];
-        }
-
-        int hisPiece = board[to].getPiece();
-        if (hisPiece == Constants.PIECE_UNKNOWN && !hasMoved[to]) {
-            // TODO Incorporate the chance that you can beat this opponent
-            valuation += pieceParams[myPiece][STILL_OPPONENT];
-        }
-
-        // Add a penalty/bonus if there's a piece at our target we can beat
-        if (hisPiece > Constants.PIECE_UNKNOWN && myPiece > hisPiece) {
-            // The parameter weighs in more when the opponent's piece is
-            // relatively weak and ours relatively strong
-            int totalValue = (hisPiece + myPiece);
-            valuation += totalValue * pieceParams[myPiece][BEAT_OPPONENT];
-        }
-
-        // If we can attack an unknown piece that has moved,
-        // see if our piece is brave (read: weak) enough to do that
-        // TODO Incorporate whether we're a miner
-        if (hasMoved[to] && hisPiece == Constants.PIECE_UNKNOWN) {
-            valuation += pieceParams[myPiece][EXPLORATION_RATE];
-        }
-
-        int topPosition = Utils.getTopOfPosition(from);
-        int topRightPosition = Utils.getTopRightOfPosition(from);
-        int topLeftPosition = Utils.getTopLeftOfPosition(from);
-        int bottomPosition = Utils.getBottomOfPosition(from);
-        int bottomLeftPosition = Utils.getBottomLeftOfPosition(from);
-        int bottomRightPosition = Utils.getBottomRightOfPosition(from);
-        int rightPosition = Utils.getRightOfPosition(from);
-        int leftPosition = Utils.getLeftOfPosition(from);
-
-        // If we can move to the opponent's side
-        if (to == bottomPosition) {
-            valuation += pieceParams[myPiece][MOVE_FORWARD];
-        }
-
-        // If we can move to the right
-        if (to == rightPosition) {
-            valuation += pieceParams[myPiece][MOVE_RIGHT];
-        }
-
-        // If we can move to our own side
-        if (to == topPosition) {
-            valuation += pieceParams[myPiece][MOVE_BACKWARD];
-        }
-
-        // If we can move to the left
-        if (to == leftPosition) {
-            valuation += pieceParams[myPiece][MOVE_LEFT];
-        }
-
-        // Top left
-        if (to == bottomRightPosition) {
-            valuation += pieceParams[myPiece][MOVE_TOP_LEFT];
-        }
-
-        // Top right
-        if (to == bottomLeftPosition) {
-            valuation += pieceParams[myPiece][MOVE_TOP_RIGHT];
-        }
-
-        // Bottom left
-        if (to == topRightPosition) {
-            valuation += pieceParams[myPiece][MOVE_BOTTOM_LEFT];
-        }
-
-        // Bottom right
-        if (to == topLeftPosition) {
-            valuation += pieceParams[myPiece][MOVE_BOTTOM_RIGHT];
-        }
-
-        // Add the random influence
-        valuation += Math.random() * RANDOM_INFLUENCE;
-        return valuation;
-    }
-
-    public int[] getMove() {
-        // from, to
-        int[] move = new int[2];
-        int bestFrom = -1;
-        int bestTo = -1;
-        double bestValuation = Double.NEGATIVE_INFINITY;
-        double valuation;
-        for (int i = 0; i < canMove.length; i++) {
-            if (board[i].getOwner() == myNumber) {
-                for (int direction = Constants.TOP; direction <= Constants.DOWNRIGHT; direction++) {
-                    if (canMove[i][direction]) {
-                        int positionInDirection =
-                                Utils.getNextPosition(direction, i);
-                        valuation = evaluateMove(i, positionInDirection);
-                        if (isBetterValuation(valuation, bestValuation, i,
-                                positionInDirection)) {
-                            bestFrom = i;
-                            bestTo = positionInDirection;
-                            bestValuation = valuation;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (bestFrom == -1 || bestTo == -1
-                || bestValuation == Double.NEGATIVE_INFINITY) {
-            return null;
-        }
-
-        move[0] = bestFrom;
-        move[1] = bestTo;
-
-        if (threeTurnRuleHigh == Math.max(bestFrom, bestTo)
-                && threeTurnRuleLow == Math.min(bestFrom, bestTo)) {
-            threeTurnRuleTurns++;
-        } else {
-            threeTurnRuleHigh = Math.max(bestFrom, bestTo);
-            threeTurnRuleLow = Math.min(bestFrom, bestTo);
-            threeTurnRuleTurns = 1;
-        }
-        return move;
-    }
-
-    /**
-     * Check is current evaluation is better than earlier valuations
-     * 
-     * @param valuation
-     * @param bestValuation
-     * @param threeTurnRuleHighValue
-     * @param threeTurnRuleLowValue
-     * @return
-     */
-    public boolean isBetterValuation(double valuation, double bestValuation,
-            int threeTurnRuleHighValue, int threeTurnRuleLowValue) {
-        return (valuation > bestValuation && !(threeTurnRuleTurns >= 3
-                && threeTurnRuleHigh == threeTurnRuleHighValue
-                && threeTurnRuleLow == threeTurnRuleLowValue));
-    }
 
     public String getBoardString() {
         StringBuilder boardString = new StringBuilder();
         boardString.append("|-----|-----|-----|-----|-----|\n");
         for (int i = Constants.PLAYER_A_START; i <= Constants.PLAYER_B_END; i++) {
             if (Utils.isCampPosition(i)) {
-                boardString.append("( ");
+                boardString.append("(");
             } else if (Utils.isCampPosition(i - 1)) {
                 boardString.append(")");
             } else {
                 boardString.append("|");
             }
             boardString.append(board[i].getOwner() == 1 ? " A " : board[i]
-                    .getOwner() == 2 ? " B " : "  ");
+                    .getOwner() == 2 ? " B " : "   ");
             boardString.append(Utils.getPieceFromRank(board[i].getPiece())
                     + " ");
             if (i == 29) {
@@ -412,19 +300,19 @@ public class Player {
                     oppDirection);
         }
     }
-    
-    public int[][] getRailMoves (int fromPosition) {
-        int[][] railMoves = null;
-        if (Utils.isOnRail(fromPosition)) {
-            // Position is on rail, so calculate rail moves
-            // Get moves going above
-            // Get moves going below
-            // Get moves going right
-            // Get moves going left
-        }
-        return railMoves;
-    }
-    
+
+//    public int[][] getRailMoves(int fromPosition) {
+//        int[][] railMoves = null;
+//        if (Utils.isOnRail(fromPosition)) {
+//            // Position is on rail, so calculate rail moves
+//            // Get moves going above
+//            // Get moves going below
+//            // Get moves going right
+//            // Get moves going left
+//        }
+//        return railMoves;
+//    }
+
     private void changeCanMoveInDirection(int thisPosition, int direction,
             int nextPosition, int oppDirection) {
         if (board[thisPosition].getOwner() == myNumber
@@ -432,29 +320,30 @@ public class Player {
             // Care only about my pieces
             canMove[thisPosition][direction] = false;
             canMove[nextPosition][oppDirection] = false;
-        }else if (board[thisPosition].getOwner() == myNumber) {
+        } else if (board[thisPosition].getOwner() == myNumber) {
             modifyMyPieceMoveStatus(thisPosition, direction, nextPosition);
-        }else if (board[nextPosition].getOwner() == myNumber){
+        } else if (board[nextPosition].getOwner() == myNumber) {
             modifyMyPieceMoveStatus(nextPosition, oppDirection, thisPosition);
         }
     }
 
     private void modifyMyPieceMoveStatus(int thisPosition, int direction,
             int nextPosition) {
-        if(board[nextPosition].getPiece() == Constants.PIECE_EMPTY) {
+        if (board[nextPosition].getPiece() == Constants.PIECE_EMPTY) {
             // Next piece is empty, check if our piece can move
             if (!Utils.isNonMovablePiece(board[thisPosition].getPiece())
-                && !Utils.isHeadquarterPosition(thisPosition)) {
+                    && !Utils.isHeadquarterPosition(thisPosition)) {
                 canMove[thisPosition][direction] = true;
             } else {
                 canMove[thisPosition][direction] = false;
             }
         } else {
-            // next piece is opponent, check if it is camp and our piece 
+            // next piece is opponent, check if it is camp and our piece
             // can move
             if (!Utils.isCampPosition(nextPosition)
-                && !Utils.isNonMovablePiece(board[thisPosition].getPiece())
-                && !Utils.isHeadquarterPosition(thisPosition)) {
+                    && !Utils.isNonMovablePiece(board[thisPosition]
+                            .getPiece())
+                    && !Utils.isHeadquarterPosition(thisPosition)) {
                 canMove[thisPosition][direction] = true;
             } else {
                 canMove[thisPosition][direction] = false;
@@ -511,5 +400,69 @@ public class Player {
 
     public void setHasMoved(boolean[] hasMoved) {
         this.hasMoved = hasMoved;
+    }
+
+    public int getMyNumber() {
+        return myNumber;
+    }
+
+    public void setMyNumber(int myNumber) {
+        this.myNumber = myNumber;
+    }
+
+    public int getHisNumber() {
+        return hisNumber;
+    }
+
+    public void setHisNumber(int hisNumber) {
+        this.hisNumber = hisNumber;
+    }
+
+    public boolean[][] getCanMove() {
+        return canMove;
+    }
+
+    public void setCanMove(boolean[][] canMove) {
+        this.canMove = canMove;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
+
+    public int getThreeTurnRuleTurns() {
+        return threeTurnRuleTurns;
+    }
+
+    public void setThreeTurnRuleTurns(int threeTurnRuleTurns) {
+        this.threeTurnRuleTurns = threeTurnRuleTurns;
+    }
+
+    public int getThreeTurnRuleLow() {
+        return threeTurnRuleLow;
+    }
+
+    public void setThreeTurnRuleLow(int threeTurnRuleLow) {
+        this.threeTurnRuleLow = threeTurnRuleLow;
+    }
+
+    public int getThreeTurnRuleHigh() {
+        return threeTurnRuleHigh;
+    }
+
+    public void setThreeTurnRuleHigh(int threeTurnRuleHigh) {
+        this.threeTurnRuleHigh = threeTurnRuleHigh;
+    }
+
+    public double[][] getPieceParams() {
+        return pieceParams;
+    }
+
+    public void setPieceParams(double[][] pieceParams) {
+        this.pieceParams = pieceParams;
     }
 }

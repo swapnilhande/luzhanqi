@@ -49,5 +49,26 @@ public class Constants {
    public static final int PLAYER_A_END = 29;
    public static final int PLAYER_B_START = 30;
    public static final int PLAYER_B_END = 59;
+   
+   // Weight params
+   public static final int FIRST_MOVE = 0;
+   public static final int STILL_OPPONENT = 1;
+   public static final int BEAT_OPPONENT = 2;
+   public static final int MOVE_FORWARD = 3;
+   public static final int MOVE_RIGHT = 4;
+   public static final int MOVE_BACKWARD = 5;
+   public static final int MOVE_LEFT = 6;
+   public static final int MOVE_TOP_RIGHT = 7;
+   public static final int MOVE_TOP_LEFT = 8;
+   public static final int MOVE_BOTTOM_RIGHT = 9;
+   public static final int MOVE_BOTTOM_LEFT = 10;
+   public static final int EXPLORATION_RATE = 11;
+   public static final int RANDOM_INFLUENCE = 12;
+   public static final int SLIDE_LEFT = 13;
+   public static final int SLIDE_RIGHT = 14;
+   public static final int SLIDE_TOP = 15;
+   public static final int SLIDE_DOWN = 16;
+   public static final int CAPTURE_FLAG = 17;
+   public static final int OPTION_PARAM_MULTIPLIER = 4;
 
 }

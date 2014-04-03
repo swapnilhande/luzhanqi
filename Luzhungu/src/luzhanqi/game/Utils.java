@@ -272,6 +272,26 @@ public class Utils {
         }
     }
 
+    public static int getNextPositionOnRail(int direction, int fromPosition,
+            int myPlayerNumber, int hisPlayerNumber, Square[] board) {
+        switch (direction) {
+        case Constants.TOP:
+            return getNextTopPositionOnRail(fromPosition, myPlayerNumber,
+                    hisPlayerNumber, board);
+        case Constants.DOWN:
+            return getNextBottomPositionOnRail(fromPosition, myPlayerNumber,
+                    hisPlayerNumber, board);
+        case Constants.LEFT:
+            return getNextLeftPositionOnRail(fromPosition, myPlayerNumber,
+                    hisPlayerNumber, board);
+        case Constants.RIGHT:
+            return getNextRightPositionOnRail(fromPosition, myPlayerNumber,
+                    hisPlayerNumber, board);
+        default:
+            return -1;
+        }
+    }
+
     public static int getInverseDirection(int direction) {
         switch (direction) {
         case Constants.TOP:
@@ -409,28 +429,94 @@ public class Utils {
                 || (xPos == 2 && yPos > 4 && yPos < 7));
     }
 
-    public static int getLeftmostPositionOnRail(int fromPosition,
+    public static int getDistanceBetweenPositions(int from, int to) {
+        int distance = 0;
+        int fromX = getXPosition(from);
+        int fromY = getYPosition(from);
+        int toX = getXPosition(to);
+        int toY = getYPosition(to);
+        distance = Math.abs(fromX - toX) + Math.abs(fromY - toY);
+        return distance;
+    }
+
+    public static boolean isEnemyCampPosition(int position) {
+        return (position == 36 || position == 38 || position == 42
+                || position == 46 || position == 48);
+    }
+
+    public static boolean isOurCampPosition(int position) {
+        return (position == 11 || position == 13 || position == 17
+                || position == 21 || position == 23);
+    }
+
+    public static int getNextLeftPositionOnRail(int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
-        int leftMostPosition = -1;
+        int nextLeftPosition = -1;
         int xPos = getXPosition(fromPosition);
         int yPos = getYPosition(fromPosition);
-        for (int i = xPos - 1; i >= 0; i--) {
-            if (Constants.PIECE_EMPTY == board[i].getPiece()) {
-                leftMostPosition = i;
-                continue;
-            } else if (board[i].getOwner() == myPlayerNumber) {
-                break;
-            } else if (board[i].getOwner() == hisPlayerNumber) {
-                leftMostPosition = i;
-                break;
+        if (xPos > 0) {
+            xPos--;
+            int position = getIndexFromCoordinates(xPos, yPos);
+            if (isOnRail(position)
+                    && (Constants.PIECE_EMPTY == board[position].getPiece() ||
+                    board[position].getOwner() == hisPlayerNumber)) {
+                nextLeftPosition = position;
             }
         }
-        if (-1 == leftMostPosition) {
-            return -1;
-        }
-        return getIndexFromCoordinates(leftMostPosition, yPos);
+        return nextLeftPosition;
     }
-    
+
+    public static int getNextRightPositionOnRail(int fromPosition,
+            int myPlayerNumber, int hisPlayerNumber, Square[] board) {
+        int nextRightPosition = -1;
+        int xPos = getXPosition(fromPosition);
+        int yPos = getYPosition(fromPosition);
+        if (xPos < 4) {
+            xPos++;
+            int position = getIndexFromCoordinates(xPos, yPos);
+            if (isOnRail(position)
+                    && (Constants.PIECE_EMPTY == board[position].getPiece() ||
+                    board[position].getOwner() == hisPlayerNumber)) {
+                nextRightPosition = position;
+            }
+        }
+        return nextRightPosition;
+    }
+
+    public static int getNextTopPositionOnRail(int fromPosition,
+            int myPlayerNumber, int hisPlayerNumber, Square[] board) {
+        int nextTopPosition = -1;
+        int xPos = getXPosition(fromPosition);
+        int yPos = getYPosition(fromPosition);
+        if (yPos > 0) {
+            yPos--;
+            int position = getIndexFromCoordinates(xPos, yPos);
+            if (isOnRail(position)
+                    && (Constants.PIECE_EMPTY == board[position].getPiece() ||
+                    board[position].getOwner() == hisPlayerNumber)) {
+                nextTopPosition = position;
+            }
+        }
+        return nextTopPosition;
+    }
+
+    public static int getNextBottomPositionOnRail(int fromPosition,
+            int myPlayerNumber, int hisPlayerNumber, Square[] board) {
+        int nextBottomPosition = -1;
+        int xPos = getXPosition(fromPosition);
+        int yPos = getYPosition(fromPosition);
+        if (yPos < 11) {
+            yPos++;
+            int position = getIndexFromCoordinates(xPos, yPos);
+            if (isOnRail(position)
+                    && (Constants.PIECE_EMPTY == board[position].getPiece() ||
+                    board[position].getOwner() == hisPlayerNumber)) {
+                nextBottomPosition = position;
+            }
+        }
+        return nextBottomPosition;
+    }
+
     public static int getRightmostPositionOnRail(int fromPosition,
             int myPlayerNumber, int hisPlayerNumber, Square[] board) {
         int rightMostPosition = -1;
@@ -503,7 +589,7 @@ public class Utils {
     public static String getPieceFromRank(int rank) {
         switch (rank) {
         case 0:
-            return "E";
+            return " ";
         case 1:
             return "U";
         case 2:
@@ -533,5 +619,10 @@ public class Utils {
         default:
             return "U";
         }
+    }
+
+    public static boolean moveOnRailPossible(int source, int target) {
+        return isOnRail(source)
+                && isOnRail(target);
     }
 }
