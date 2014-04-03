@@ -69,6 +69,14 @@ public class Constants {
    public static final int SLIDE_TOP = 15;
    public static final int SLIDE_DOWN = 16;
    public static final int CAPTURE_FLAG = 17;
+   public static final int APPROACH_ENEMY_FLAG = 18;
+   public static final int APPROACH_ENEMY_SAFE_ZONES = 19;
+   public static final int APPROACH_OUR_SAFE_ZONES = 20;
+   public static final int DEFUSE_MINE = 20;
+   public static final int PROTECT_BASE = 21;
+   public static final int CHEAP_PATRIOT = 22;
+   public static final int BRAVE_PATRIOT = 23;
+   public static final int KILL_INTRUDER = 24;
    public static final int OPTION_PARAM_MULTIPLIER = 4;
 
 }

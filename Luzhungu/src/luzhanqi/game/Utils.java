@@ -60,6 +60,16 @@ public class Utils {
         return (position == 1 || position == 3 || position == 58
         || position == 56);
     }
+    
+    /**
+     * Is the given position the enemy headquarter position?
+     * 
+     * @param position
+     * @return
+     */
+    public static boolean isEnemyHeadquarterPosition(int position) {
+        return (position == 58 || position == 56);
+    }
 
     /**
      * Is the piece immovable?

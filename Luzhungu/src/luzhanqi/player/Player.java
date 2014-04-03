@@ -15,21 +15,20 @@ public class Player {
      */
     private int hisNumber;
     /**
-     * Array of 60 square position to represent
-     * Luzhanqi's board configuration.
-     * Index represents the position,
-     * and value represent the piece
+     * Array of 60 square position to represent Luzhanqi's board
+     * configuration. Index represents the position, and value represent the
+     * piece
      */
     private Square[] board;
     /**
-     * Array of 60 positions with 8 directions which takes either
-     * true/false. True indicates piece has moved. False
-     * indicates piece has moved from that position
+     * Array of 60 positions with 8 directions which takes either true/false.
+     * True indicates piece has moved. False indicates piece has moved from
+     * that position
      */
     private boolean[][] canMove;
     /**
-     * Array of 60 positions which states if the piece on
-     * that position has ever moved
+     * Array of 60 positions which states if the piece on that position has
+     * ever moved
      */
     private boolean[] hasMoved;
     /**
@@ -49,26 +48,6 @@ public class Player {
      * The highest square we've been moving back and forth on
      */
     private int threeTurnRuleHigh;
-
-    public static final int FIRST_MOVE = 0;
-    public static final int STILL_OPPONENT = 1;
-    public static final int BEAT_OPPONENT = 2;
-    public static final int MOVE_FORWARD = 3;
-    public static final int MOVE_RIGHT = 4;
-    public static final int MOVE_BACKWARD = 5;
-    public static final int MOVE_LEFT = 6;
-    public static final int MOVE_TOP_RIGHT = 7;
-    public static final int MOVE_TOP_LEFT = 8;
-    public static final int MOVE_BOTTOM_RIGHT = 9;
-    public static final int MOVE_BOTTOM_LEFT = 10;
-    public static final int EXPLORATION_RATE = 11;
-    public static final int RANDOM_INFLUENCE = 12;
-    public static final int SLIDE_LEFT = 13;
-    public static final int SLIDE_RIGHT = 14;
-    public static final int SLIDE_TOP = 15;
-    public static final int SLIDE_DOWN = 16;
-    public static final int CAPTURE_FLAG = 17;
-    public static final int OPTION_PARAM_MULTIPLIER = 4;
 
     private double[][] pieceParams;
 
@@ -139,47 +118,64 @@ public class Player {
     public void initializeParams() {
         pieceParams = new double[Constants.PIECE_FIELDMARSHAL + 1][];
         for (int i = 0; i < pieceParams.length; i++) {
-            pieceParams[i] = new double[CAPTURE_FLAG + 1];
-            pieceParams[i][FIRST_MOVE] = (Math.random() - 0)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][STILL_OPPONENT] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][BEAT_OPPONENT] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_FORWARD] = (Math.random() - 0)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_RIGHT] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_BACKWARD] = (Math.random() - 0.8)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_LEFT] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_TOP_LEFT] = (Math.random() - 0)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_TOP_RIGHT] = (Math.random() - 0)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_BOTTOM_LEFT] = (Math.random() - 0.8)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][MOVE_BOTTOM_RIGHT] = (Math.random() - 0.8)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][EXPLORATION_RATE] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][RANDOM_INFLUENCE] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
+            pieceParams[i] = new double[Constants.KILL_INTRUDER + 1];
+            pieceParams[i][Constants.FIRST_MOVE] = (Math.random() - 0)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.STILL_OPPONENT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.BEAT_OPPONENT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_FORWARD] = (Math.random() - 0)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_RIGHT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_BACKWARD] = (Math.random() - 0.8)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_LEFT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_TOP_LEFT] = (Math.random() - 0)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_TOP_RIGHT] = (Math.random() - 0)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_BOTTOM_LEFT] = (Math.random() - 0.8)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.MOVE_BOTTOM_RIGHT] = (Math.random() - 0.8)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.EXPLORATION_RATE] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.RANDOM_INFLUENCE] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
             // TODO: CHeck adding for rail moves
-            pieceParams[i][SLIDE_DOWN] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][SLIDE_LEFT] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][SLIDE_RIGHT] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][SLIDE_TOP] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][CAPTURE_FLAG] = (Math.random() - 0.5)
-                    * OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.SLIDE_DOWN] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.SLIDE_LEFT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.SLIDE_RIGHT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.SLIDE_TOP] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.CAPTURE_FLAG] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.APPROACH_ENEMY_FLAG] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.APPROACH_ENEMY_SAFE_ZONES] = (Math
+                    .random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.APPROACH_OUR_SAFE_ZONES] = (Math
+                    .random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.DEFUSE_MINE] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.PROTECT_BASE] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.CHEAP_PATRIOT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.BRAVE_PATRIOT] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
+            pieceParams[i][Constants.KILL_INTRUDER] = (Math.random() - 0.5)
+                    * Constants.OPTION_PARAM_MULTIPLIER;
         }
     }
-
 
     public String getBoardString() {
         StringBuilder boardString = new StringBuilder();
@@ -301,17 +297,17 @@ public class Player {
         }
     }
 
-//    public int[][] getRailMoves(int fromPosition) {
-//        int[][] railMoves = null;
-//        if (Utils.isOnRail(fromPosition)) {
-//            // Position is on rail, so calculate rail moves
-//            // Get moves going above
-//            // Get moves going below
-//            // Get moves going right
-//            // Get moves going left
-//        }
-//        return railMoves;
-//    }
+    // public int[][] getRailMoves(int fromPosition) {
+    // int[][] railMoves = null;
+    // if (Utils.isOnRail(fromPosition)) {
+    // // Position is on rail, so calculate rail moves
+    // // Get moves going above
+    // // Get moves going below
+    // // Get moves going right
+    // // Get moves going left
+    // }
+    // return railMoves;
+    // }
 
     private void changeCanMoveInDirection(int thisPosition, int direction,
             int nextPosition, int oppDirection) {
