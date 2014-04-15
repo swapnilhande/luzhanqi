@@ -50,6 +50,8 @@ public class Player {
     private int threeTurnRuleHigh;
 
     private double[][] pieceParams;
+    
+    public static int genocideKillCount = 0;
 
     public Player(int playerNumber, Double time) {
         this.myNumber = playerNumber;
@@ -155,7 +157,7 @@ public class Player {
                     * Constants.OPTION_PARAM_MULTIPLIER;
             pieceParams[i][Constants.SLIDE_TOP] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.CAPTURE_FLAG] = (100)
+            pieceParams[i][Constants.CAPTURE_FLAG] = (1000)
                     * Constants.OPTION_PARAM_MULTIPLIER;
             pieceParams[i][Constants.APPROACH_ENEMY_FLAG] = (2)
                     * Constants.OPTION_PARAM_MULTIPLIER;
@@ -163,7 +165,7 @@ public class Player {
                     * Constants.OPTION_PARAM_MULTIPLIER;
             pieceParams[i][Constants.APPROACH_OUR_SAFE_ZONES] = (1)
                     * Constants.OPTION_PARAM_MULTIPLIER;
-            pieceParams[i][Constants.DEFUSE_MINE] = (2)
+            pieceParams[i][Constants.DEFUSE_MINE] = (3)
                     * Constants.OPTION_PARAM_MULTIPLIER;
             pieceParams[i][Constants.PROTECT_BASE] = (3)
                     * Constants.OPTION_PARAM_MULTIPLIER;
