@@ -410,6 +410,19 @@ public class Utils {
         }
     }
 
+    public static int getMinDistanceFromRail(int fromIndex) {
+        int minDistance = Integer.MAX_VALUE;
+        int[] railIndexes = { 5, 6, 7, 8, 9, 14, 19, 24, 29, 34, 39, 44, 49,
+                54, 53, 52, 51, 50, 45, 40, 35, 25, 20, 15, 10, 26, 27, 28,
+                31, 32, 33 };
+        for (int railIndex : railIndexes) {
+            int distance = Utils.getDistanceBetweenPositions(fromIndex,
+                    railIndex);
+            minDistance = Math.min(distance, minDistance);
+        }
+        return minDistance;
+    }
+    
     /**
      * Returns the index on the board based on the position name
      * 
@@ -792,5 +805,28 @@ public class Utils {
     public static boolean moveOnRailPossible(int source, int target) {
         return isOnRail(source)
                 && isOnRail(target);
+    }
+
+    /**
+     * Returns true if the given index position on board is a corner position
+     * on rail road. Else returns false.
+     * 
+     * @param index
+     * @return boolean
+     */
+    public static boolean isCornerOnRail(int index) {
+        return (index == 5 || index == 9 || index == 50 || index == 54);
+    }
+
+    /**
+     * Returns true if the given index position on board is a intersection
+     * position on rail road. Else returns false.
+     * 
+     * @param index
+     * @return boolean
+     */
+    public static boolean isIntersectionOnRail(int index) {
+        return (index == 25 || index == 27 || index == 29 || index == 30
+                || index == 32 || index == 34);
     }
 }

@@ -39,6 +39,8 @@ public class Play5500 {
                     System.exit(0);
                 } else if (SyntaxValidator.isFlag(inputCommand)) {
                     storeOpponentFlagPosition(player, inputCommand);
+                } else if (inputCommand.equals("print")){
+                    System.out.println(player.getBoardString());
                 }
             } catch (Exception e) {
                 System.exit(-1);
@@ -103,14 +105,30 @@ public class Play5500 {
         if (whoseTurn == player.getMyPlayerNumber()) {
             long startTime = System.currentTimeMillis();
             int[] movegame = moveGenerator.getMoveInTime(startTime);
+            /* Genocide General*/
+            if (movegame != null && player.genocideKillCount < 4) {
+                int from = movegame[0];
+                int to = movegame[1];
+                int fromYPos = Utils.getYPosition(from);
+                int toYPos = Utils.getYPosition(to);
+                int hisPiece = player.getBoard()[to].getPiece();
+                int myPiece = player.getBoard()[from].getPiece();
+                if (myPiece == Constants.PIECE_GENERAL && fromYPos == 7
+                        && toYPos == 7 && hisPiece != Constants.PIECE_EMPTY
+                        && player.genocideKillCount < 4) {
+                    player.genocideKillCount++;
+                }
+
+            }
             if (Constants.LOGGING_ENABLED) {
                 try {
                     FileWriter fw = new FileWriter("log.txt", true);
                     BufferedWriter bw = new BufferedWriter(fw);
-                    if(movegame == null) {
+                    if (movegame == null) {
                         bw.write("\nMove: resign");
-                    }else{
-                        bw.write("\nMove: "+movegame[0] + " -> "+movegame[1]);
+                    } else {
+                        bw.write("\nMove: " + movegame[0] + " -> "
+                                + movegame[1]);
                     }
                     bw.close();
                 } catch (IOException e) {
@@ -138,7 +156,7 @@ public class Play5500 {
         String playerNumber = SyntaxParser.getFirstTurn(inputCommand);
         String time = SyntaxParser.getFirstTimePerMove(inputCommand);
         player = new Player(Integer.parseInt(playerNumber),
-                Double.parseDouble(time)*1000);
+                Double.parseDouble(time) * 1000);
         System.out.println(Utils.getInitialConfig(player.getBoard()));
         return player;
     }
