@@ -49,6 +49,9 @@ public class Player {
      */
     private int threeTurnRuleHigh;
 
+    /**
+     * Weights for the scenarios
+     */
     private double[] pieceParams;
 
     public Player(int playerNumber, Double time) {
