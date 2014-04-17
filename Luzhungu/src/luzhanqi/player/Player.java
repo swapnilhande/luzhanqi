@@ -131,11 +131,11 @@ public class Player {
         pieceParams[Constants.MOVE_LEFT] = 2 * Constants.MULTIPLIER;
         // pieceParams[Constants.MOVE_TOP_LEFT] = 4 * Constants.MULTIPLIER;
         // pieceParams[Constants.MOVE_TOP_RIGHT] = 4 * Constants.MULTIPLIER;
-        pieceParams[Constants.MOVE_BOTTOM_LEFT] = 4 * Constants.MULTIPLIER;
-        pieceParams[Constants.MOVE_BOTTOM_RIGHT] = 4 * Constants.MULTIPLIER;
+        pieceParams[Constants.MOVE_FORWARD_LEFT] = 4 * Constants.MULTIPLIER;
+        pieceParams[Constants.MOVE_FORWARD_RIGHT] = 4 * Constants.MULTIPLIER;
         // pieceParams[Constants.EXPLORATION_RATE] = 1 * Constants.MULTIPLIER;
         // TODO: CHeck adding for rail moves
-        pieceParams[Constants.SLIDE_DOWN] = 4 * Constants.MULTIPLIER;
+        pieceParams[Constants.SLIDE_FORWARD] = 4 * Constants.MULTIPLIER;
         pieceParams[Constants.SLIDE_LEFT] = 2 * Constants.MULTIPLIER;
         pieceParams[Constants.SLIDE_RIGHT] = 2 * Constants.MULTIPLIER;
         // pieceParams[Constants.SLIDE_TOP] = 1 * Constants.MULTIPLIER;
