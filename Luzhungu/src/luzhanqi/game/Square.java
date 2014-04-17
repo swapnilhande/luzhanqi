@@ -12,7 +12,7 @@ public class Square {
     private int owner;
 
     /**
-     * Should only be called for initializing empty pieces
+     * Initializes empty piece.
      */
     public Square() {
         this.piece = Constants.PIECE_EMPTY;
@@ -21,7 +21,7 @@ public class Square {
     }
 
     /**
-     * To initialize a square with piece and owner other than Empty piece
+     * Initializes a square with piece and owner other than Empty piece
      * @param piece
      * @param owner
      */

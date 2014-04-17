@@ -15,11 +15,13 @@ public class MoveGenerator {
      */
     Move bestMove;
 
+    /**
+     * Margin to keep before the time runs out.
+     */
     public static final double MARGIN = 0.1;
 
     /**
      * Initialize move generator for the given player
-     * 
      * @param player
      */
     public MoveGenerator(Player player) {
@@ -30,7 +32,7 @@ public class MoveGenerator {
     /**
      * This method returns a move in alloted time.
      * 
-     * @param start
+     * @param start Start time to get move
      * @return returns array of integer of length 2. first is source index and
      *         second is target
      */
@@ -47,9 +49,9 @@ public class MoveGenerator {
         }
 
         // if no moves are left
-        if (noMove())
+        if (noMove()) {
             return null;
-
+        }
         move[0] = bestMove.getFromIndex();
         move[1] = bestMove.getToIndex();
         return move;
@@ -57,13 +59,14 @@ public class MoveGenerator {
 
     /**
      * This method evaluates all possible moves and updates bestMove with best
-     * evaluation
+     * evaluation, within the given time.
      */
     public void getBestMove(long startTime) {
         double valuation = 0.0;
         for (int i = 0; i < player.getCanMove().length; i++) {
             if (player.getBoard()[i].getOwner() == player.getMyNumber()) {
-                for (int direction = Constants.TOP; direction <= Constants.DOWNRIGHT; direction++) {
+                for (int direction = Constants.TOP; 
+                        direction <= Constants.DOWNRIGHT; direction++) {
                     updateBestMoveInDirection(i, direction, valuation);
                 }
                 if (!isTimeLeft(startTime))
@@ -77,7 +80,6 @@ public class MoveGenerator {
 
     /**
      * This method determines if time to determine is left or not
-     * 
      * @param startTime
      * @return true if time left false otherwise
      */
@@ -89,7 +91,6 @@ public class MoveGenerator {
     /**
      * This method determines if the bestMove is updated after all possible
      * moves
-     * 
      * @return true if bestMove is updated false otherwise
      */
     public boolean noMove() {
@@ -98,7 +99,6 @@ public class MoveGenerator {
 
     /**
      * This method determines the possible moves in a direction
-     * 
      * @param source
      * @param direction
      * @param valuation
@@ -107,7 +107,6 @@ public class MoveGenerator {
             double valuation) {
         if (player.getCanMove()[source][direction]) {
             int target = Utils.getNextPosition(direction, source);
-            // Start - Railroad- Vivek
             if (Utils.moveOnRailPossible(source, target)) {
                 updateBestMoveOnRail(source, direction, target);
             }
@@ -119,9 +118,7 @@ public class MoveGenerator {
 
     /**
      * This method determines if the piece is engineer or not
-     * 
-     * @param index
-     *            : index of piece on the board
+     * @param index index of piece on the board
      * @return true if the piece is engineer otherwise false
      */
     private boolean isPieceEngineer(int index) {
@@ -131,7 +128,6 @@ public class MoveGenerator {
 
     /**
      * This method evaluates the moves along the rails
-     * 
      * @param source
      * @param direction
      * @param target
@@ -161,6 +157,14 @@ public class MoveGenerator {
         }
     }
 
+    /**
+     * Updates the best possible move for an Engineer based on the given source
+     * direction, target and covered directions
+     * @param source
+     * @param direction
+     * @param target
+     * @param isDirectionCovered
+     */
     private void updateBestMoveOnRailForEngineer(int source
             , int direction, int target, boolean[][] isDirectionCovered) {
         while (Utils.isOnRail(target)) {
@@ -177,10 +181,7 @@ public class MoveGenerator {
                 break;
             }
 
-            // check for the direction
-            // if not available
-            // update move for rail in
-            // every other direction
+            // Special cases: intersections
             if (Utils.isTargetAtIntersection(target)) {
                 for (int i = 0; i < 4; i++) {
                     int newDirection = i;
@@ -228,11 +229,8 @@ public class MoveGenerator {
 
     /**
      * This method update the three turn parameters for the move
-     * 
-     * @param from
-     *            : from position
-     * @param to
-     *            : to position
+     * @param from from position
+     * @param to to position
      */
     private void adjustThreeTurnParams(int from, int to) {
         if (player.getThreeTurnRuleHigh() == Math.max(from, to)
@@ -248,6 +246,8 @@ public class MoveGenerator {
     /**
      * Returns true if next position on rail is -1 or if it is occupied by our
      * player, else false
+     * @param pos
+     * @return
      */
     private boolean isNextOnRailInValid(int pos)
     {
@@ -258,7 +258,6 @@ public class MoveGenerator {
 
     /**
      * Check is current evaluation is better than earlier valuations
-     * 
      * @param valuation
      * @param bestValuation
      * @param threeTurnRuleHighValue
@@ -279,23 +278,16 @@ public class MoveGenerator {
      * 
      * @param from
      * @param to
-     * @return
+     * @return valuation
      */
     public double evaluateMove(int from, int to) {
 
         double valuation = 0;
         double[] pieceWeights = player.getPieceParams();
-        int fromXPos = Utils.getXPosition(from);
-        int toXPos = Utils.getXPosition(to);
         int fromYPos = Utils.getYPosition(from);
         int toYPos = Utils.getYPosition(to);
         int myPiece = player.getBoard()[from].getPiece();
         int hisPiece = player.getBoard()[to].getPiece();
-        int topRightPosition = Utils.getTopRightOfPosition(from);
-        int topLeftPosition = Utils.getTopLeftOfPosition(from);
-        int bottomPosition = Utils.getBottomOfPosition(from);
-        int rightPosition = Utils.getRightOfPosition(from);
-        int leftPosition = Utils.getLeftOfPosition(from);
 
         // SPARTA ABYSS: Do not move to our head quarter position
         if (to == 3 || to == 1) {
@@ -316,7 +308,7 @@ public class MoveGenerator {
         // DONT LOOK BACK: If we are in enemy safe zone, do not move back to 
         // non attacking position in empty position
         if (Utils.isEnemyCampPosition(from) && toYPos < fromYPos
-                && hisPiece == Constants.PIECE_EMPTY) {
+                /*&& hisPiece == Constants.PIECE_EMPTY*/) {
             return valuation;
         }
 
@@ -349,12 +341,13 @@ public class MoveGenerator {
             if (player.getBoard()[56].getPiece() == Constants.PIECE_FLAG
                     && to == 51) {
                 return Double.MAX_VALUE / 2;
-            } else if (player.getBoard()[58].getPiece() == Constants.PIECE_FLAG
-                    && to == 53) {
+            } else if (player.getBoard()[58].getPiece() 
+                    == Constants.PIECE_FLAG && to == 53) {
                 return Double.MAX_VALUE / 2;
             } else if (to == 51 || to == 53) {
                 return Double.MAX_VALUE / 3;
-            } else if (hisPiece != Constants.PIECE_EMPTY && myPiece >= hisPiece){
+            } else if (hisPiece != Constants.PIECE_EMPTY 
+                    && myPiece >= hisPiece){
                 return Double.MAX_VALUE / 4;
             }
         }
@@ -375,7 +368,8 @@ public class MoveGenerator {
         // closer to enemy headquarters
         if (hisPiece == Constants.PIECE_UNKNOWN) {
             if (myPiece == Constants.PIECE_BOMB) {
-                valuation += (myPiece * pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT]);
+                valuation += (myPiece * 
+                        pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT]);
             }
             // Add weight depending on how its closer to enemy flag
             int distanceFromFlag = Utils.getDistanceBetweenPositions(
@@ -444,9 +438,8 @@ public class MoveGenerator {
                 if (Utils.isOurCampPosition(to)
                         && myPiece != Constants.PIECE_BOMB) {
                     valuation += ((15 - Utils.getDistanceBetweenPositions(to,
-                            1))
-                            +
-                            myPiece + pieceWeights[Constants.APPROACH_OUR_SAFE_ZONES]);
+                            1)) + myPiece + 
+                            pieceWeights[Constants.APPROACH_OUR_SAFE_ZONES]);
                 }
                 break;
             }
@@ -476,7 +469,8 @@ public class MoveGenerator {
                                 .getBoard()[i].getPiece()
                         || myPiece == Constants.PIECE_BOMB)) {
                     // give more weights if our piece can kill intruder
-                    valuation += (myPiece * pieceWeights[Constants.KILL_INTRUDER]);
+                    valuation += (myPiece * 
+                            pieceWeights[Constants.KILL_INTRUDER]);
                 }
             }
         }
@@ -490,35 +484,34 @@ public class MoveGenerator {
 
         // THIS IS SPARTA: When our pieces are low, full attack, more weights
         // to go forward
-        if (player.getMyPiecesCount() < 13) {
-            // If we can move to the opponent's side
-            if (to == bottomPosition) {
-                valuation += pieceWeights[Constants.MOVE_FORWARD];
+        int mypiecesCount = 0;
+        for (int i = 0; i < 60; i++) {
+            if (player.getBoard()[i].getOwner() == player.getMyNumber()) {
+                mypiecesCount++;
             }
-            // If we can move to the right
-            if (to == rightPosition) {
-                valuation += pieceWeights[Constants.MOVE_RIGHT];
+        }
+        if (mypiecesCount < 13) {
+            boolean isOpponentPresent = false;
+            for (int i = 0; i < 15; i++) {
+                if (player.getBoard()[i].getOwner() == player.getHisNumber()) {
+                    isOpponentPresent = true;
+                    break;
+                }
             }
-            // If we can move to the left
-            if (to == leftPosition) {
-                valuation += pieceWeights[Constants.MOVE_LEFT];
-            }
-            // Bottom left
-            if (to == topRightPosition) {
-                valuation += pieceWeights[Constants.MOVE_FORWARD_LEFT];
-            }
-            // Bottom right
-            if (to == topLeftPosition) {
-                valuation += pieceWeights[Constants.MOVE_FORWARD_RIGHT];
-            }
-            if (toXPos < fromXPos - 1) {
-                valuation += pieceWeights[Constants.SLIDE_LEFT];
-            }
-            if (toXPos > fromXPos + 1) {
-                valuation += pieceWeights[Constants.SLIDE_RIGHT];
-            }
-            if (toYPos > fromYPos + 1) {
-                valuation += pieceWeights[Constants.SLIDE_FORWARD];
+            if(!isOpponentPresent) {
+                boolean isMyPieceInEnemy = false;
+                for (int i = 45; i < 60; i++) {
+                    if (player.getBoard()[i].getOwner() 
+                            == player.getMyNumber()) { 
+                        isMyPieceInEnemy = true;
+                        break;
+                    }
+                }
+                if(!isMyPieceInEnemy) {
+                    if (toYPos > fromYPos) {
+                       return pieceWeights[Constants.SLIDE_FORWARD];
+                    }
+                }
             }
         }
 

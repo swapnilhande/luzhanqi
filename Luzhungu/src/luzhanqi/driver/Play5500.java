@@ -39,9 +39,9 @@ public class Play5500 {
                     System.exit(0);
                 } else if (SyntaxValidator.isFlag(inputCommand)) {
                     storeOpponentFlagPosition(player, inputCommand);
-                } else if (inputCommand.equals("print")){
+                }/* else if (inputCommand.equals("print")){
                     System.out.println(player.getBoardString());
-                }
+                }*/
             } catch (Exception e) {
                 System.exit(-1);
             }
@@ -50,7 +50,6 @@ public class Play5500 {
 
     /**
      * Stores opponents flag position
-     * 
      * @param player
      * @param inputCommand
      * @throws Exception
@@ -68,7 +67,6 @@ public class Play5500 {
 
     /**
      * Stores the outcomes from referee to our state, depending on the player
-     * 
      * @param player
      * @param inputCommand
      * @throws IOException
@@ -88,15 +86,14 @@ public class Play5500 {
                 bw.write("\nBoard:\n" + player.getBoardString() + "\n");
                 bw.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
     }
 
     /**
-     * Gets our move based on the current board configuration
-     * 
+     * Returns best possible move based on the current board configuration
+     * withing the time limit.
      * @param inputCommand
      */
     private static void makeOurMove(String inputCommand) {
@@ -105,21 +102,6 @@ public class Play5500 {
         if (whoseTurn == player.getMyPlayerNumber()) {
             long startTime = System.currentTimeMillis();
             int[] movegame = moveGenerator.getMoveInTime(startTime);
-            /* Genocide General*/
-            if (movegame != null && player.genocideKillCount < 4) {
-                int from = movegame[0];
-                int to = movegame[1];
-                int fromYPos = Utils.getYPosition(from);
-                int toYPos = Utils.getYPosition(to);
-                int hisPiece = player.getBoard()[to].getPiece();
-                int myPiece = player.getBoard()[from].getPiece();
-                if (myPiece == Constants.PIECE_GENERAL && fromYPos == 7
-                        && toYPos == 7 && hisPiece != Constants.PIECE_EMPTY
-                        && player.genocideKillCount < 4) {
-                    player.genocideKillCount++;
-                }
-
-            }
             if (Constants.LOGGING_ENABLED) {
                 try {
                     FileWriter fw = new FileWriter("log.txt", true);
@@ -132,10 +114,10 @@ public class Play5500 {
                     }
                     bw.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
+            // Resign if we can't move
             if (movegame == null) {
                 System.out.println("(resign)");
             } else {
@@ -145,9 +127,8 @@ public class Play5500 {
     }
 
     /**
-     * Initialized the board and pieces and prints the initial configuration
+     * Initializes the board and pieces and prints the initial configuration
      * to standard output
-     * 
      * @param inputCommand
      * @return
      */

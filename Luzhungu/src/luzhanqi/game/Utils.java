@@ -6,7 +6,6 @@ public class Utils {
 
     /**
      * Returns the left position of the given position
-     * 
      * @param position
      * @return
      */
@@ -16,7 +15,6 @@ public class Utils {
 
     /**
      * Returns the right position of the given position
-     * 
      * @param position
      * @return
      */
@@ -26,7 +24,6 @@ public class Utils {
 
     /**
      * Returns the top position of the given position
-     * 
      * @param position
      * @return
      */
@@ -36,7 +33,6 @@ public class Utils {
 
     /**
      * Returns the bottom position of the given position
-     * 
      * @param position
      * @return
      */
@@ -46,7 +42,6 @@ public class Utils {
 
     /**
      * Returns the top right position of the given position
-     * 
      * @param position
      * @return
      */
@@ -56,7 +51,6 @@ public class Utils {
 
     /**
      * Returns the bottom right position of the given position
-     * 
      * @param position
      * @return
      */
@@ -66,7 +60,6 @@ public class Utils {
 
     /**
      * Returns the top left position of the given position
-     * 
      * @param position
      * @return
      */
@@ -76,17 +69,16 @@ public class Utils {
 
     /**
      * Returns the bottom left position of the given position
-     * 
      * @param position
      * @return
      */
     public static int getBottomLeftOfPosition(int position) {
         return position + 4;
     }
+    
 
     /**
      * Is the given position a camp position?
-     * 
      * @param position
      * @return
      */
@@ -99,7 +91,6 @@ public class Utils {
 
     /**
      * Is the given position the headquarter position?
-     * 
      * @param position
      * @return
      */
@@ -110,7 +101,6 @@ public class Utils {
 
     /**
      * Is the given position the enemy headquarter position?
-     * 
      * @param position
      * @return
      */
@@ -120,7 +110,6 @@ public class Utils {
 
     /**
      * Is the piece immovable?
-     * 
      * @param piece
      * @return
      */
@@ -132,7 +121,6 @@ public class Utils {
 
     /**
      * Is top direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -144,7 +132,6 @@ public class Utils {
 
     /**
      * Is bottom direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -156,7 +143,6 @@ public class Utils {
 
     /**
      * Get board index from the given xposition and yposition
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -167,7 +153,6 @@ public class Utils {
 
     /**
      * Is right direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -178,7 +163,6 @@ public class Utils {
 
     /**
      * Is left direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -189,7 +173,6 @@ public class Utils {
 
     /**
      * Is top right direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -211,7 +194,6 @@ public class Utils {
 
     /**
      * Is bottom left direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -233,7 +215,6 @@ public class Utils {
 
     /**
      * Is bottom right direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -255,7 +236,6 @@ public class Utils {
 
     /**
      * Is top left direction available?
-     * 
      * @param xPos
      * @param yPos
      * @return
@@ -277,7 +257,6 @@ public class Utils {
 
     /**
      * Returns the xposition from the given index of board
-     * 
      * @param squareIndex
      * @return
      */
@@ -287,7 +266,6 @@ public class Utils {
 
     /**
      * Returns the yposition from the given index of board
-     * 
      * @param squareIndex
      * @return
      */
@@ -410,6 +388,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Returns the minimum distance from the given location to a rail road
+     * @param fromIndex
+     * @return
+     */
     public static int getMinDistanceFromRail(int fromIndex) {
         int minDistance = Integer.MAX_VALUE;
         int[] railIndexes = { 5, 6, 7, 8, 9, 14, 19, 24, 29, 34, 39, 44, 49,
@@ -490,8 +473,7 @@ public class Utils {
     /**
      * Get the move string e.g (A1 B1) from move
      * 
-     * @param move
-     *            (from, to)
+     * @param move (from, to)
      * @return
      */
     public static String getMoveStringFromMove(int[] move) {
@@ -509,7 +491,8 @@ public class Utils {
     public static String getInitialConfig(Square[] board) {
         StringBuilder initialMove = new StringBuilder();
         initialMove.append("( ");
-        for (int i = Constants.PLAYER_A_START; i <= Constants.PLAYER_A_END; i++) {
+        for (int i = Constants.PLAYER_A_START; 
+                i <= Constants.PLAYER_A_END; i++) {
             int piece = board[i].getPiece();
             if (piece > 1) {
                 initialMove.append("( ");
