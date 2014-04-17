@@ -1,8 +1,5 @@
 package luzhanqi.play;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import luzhanqi.game.Constants;
 import luzhanqi.game.Utils;
 import luzhanqi.player.Player;
@@ -294,12 +291,9 @@ public class MoveGenerator {
         int toYPos = Utils.getYPosition(to);
         int myPiece = player.getBoard()[from].getPiece();
         int hisPiece = player.getBoard()[to].getPiece();
-        int topPosition = Utils.getTopOfPosition(from);
         int topRightPosition = Utils.getTopRightOfPosition(from);
         int topLeftPosition = Utils.getTopLeftOfPosition(from);
         int bottomPosition = Utils.getBottomOfPosition(from);
-        int bottomLeftPosition = Utils.getBottomLeftOfPosition(from);
-        int bottomRightPosition = Utils.getBottomRightOfPosition(from);
         int rightPosition = Utils.getRightOfPosition(from);
         int leftPosition = Utils.getLeftOfPosition(from);
 
@@ -313,22 +307,25 @@ public class MoveGenerator {
             return valuation;
         }
 
+        // SMART ENGINEER: Do not move engineer in places that are not near
+        // to enemy headquarters
         if (myPiece == Constants.PIECE_ENGINEER && to < 50) {
             return valuation;
         }
 
-        // If we are in enemy safe zone, do not move back to non attacking
-        // position
-        if (Utils.isEnemyCampPosition(from) && toYPos < fromYPos) {
+        // DONT LOOK BACK: If we are in enemy safe zone, do not move back to 
+        // non attacking position in empty position
+        if (Utils.isEnemyCampPosition(from) && toYPos < fromYPos
+                && hisPiece == Constants.PIECE_EMPTY) {
             return valuation;
         }
 
-        // We dont protect grenades
+        // DANGEROUS GRENADES: Do not move grenades to our camp position
         if (myPiece == Constants.PIECE_BOMB && Utils.isOurCampPosition(to)) {
             return valuation;
         }
 
-        // CAPTURE_FLAG
+        // MEDAL OF HONOR: Capture the enemy flag if you get the chance
         if (player.getBoard()[56].getPiece() == Constants.PIECE_FLAG
                 && to == 56) {
             return Double.POSITIVE_INFINITY;
@@ -339,34 +336,16 @@ public class MoveGenerator {
             return Double.POSITIVE_INFINITY;
         }
 
-        // Capture opponent marshall
+        // NUKE MARSHALL: Kill enemy marshal with bomb when possible.
         if (myPiece == Constants.PIECE_BOMB
                 && hisPiece == Constants.PIECE_FIELDMARSHAL) {
             return Double.MAX_VALUE / 2;
         }
         
-        // Moving to a flag position
-        
-
-        // 8. Our engineer takes out the land mines
-        // DEFUSE_MINE
+        // DETONATOR: Engineer should defuse the mines, or move towards the 
+        // flag position
         if (player.getBoard()[from].getPiece() == Constants.PIECE_ENGINEER
-                // && !player.getHasMoved()[to]
-                // && player.getBoard()[to].getPiece() ==
-                // Constants.PIECE_UNKNOWN
                 && to > 49) {
-            /*
-             * valuation += (Constants.PIECE_FIELDMARSHAL *
-             * pieceWeights[Constants.DEFUSE_MINE]); if
-             * (!player.getHasMoved()[to]) { valuation +=
-             * (Constants.PIECE_FIELDMARSHAL *
-             * pieceWeights[Constants.DEFUSE_MINE]); }
-             */
-            /*
-             * System.out.println("Defuse Mine");
-             * System.out.println("Valuation: " + (Double.POSITIVE_INFINITY -
-             * 100));
-             */
             if (player.getBoard()[56].getPiece() == Constants.PIECE_FLAG
                     && to == 51) {
                 return Double.MAX_VALUE / 2;
@@ -380,7 +359,7 @@ public class MoveGenerator {
             }
         }
         
-        // Moving in front of flag
+        // SWEET TARGET: Move in front of the flag when possible
         if (player.getBoard()[56].getPiece() == Constants.PIECE_FLAG
                 && to == 51) {
             return Double.MAX_VALUE / 5;
@@ -391,9 +370,9 @@ public class MoveGenerator {
             return Double.MAX_VALUE / 6;
         }
 
-        // 2. Dare to take down unknown opponent
-        // The condition when we are going in the last two rows, check if the
-        // piece has moved, more chances that its not a bomb
+        // DARE TO KILL: Dare to take down unknown opponent
+        // Bomb should get better valuation, and more valuation for pieces 
+        // closer to enemy headquarters
         if (hisPiece == Constants.PIECE_UNKNOWN) {
             if (myPiece == Constants.PIECE_BOMB) {
                 valuation += (myPiece * pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT]);
@@ -405,25 +384,24 @@ public class MoveGenerator {
                     pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT];
         }
 
-        // Moving towards rail roads
+        // EXPRESS TRAVEL: Moving towards rail roads
         valuation += (Utils.getMinDistanceFromRail(to) *
                 pieceWeights[Constants.MOVE_TOWARDS_RAIL]);
 
-        // Add more weight for engineer
+        // ENGINEER EXPRESS TRAVEL: Add more weight for engineer
         if (myPiece == Constants.PIECE_ENGINEER) {
             valuation += (Utils.getMinDistanceFromRail(to) *
                     pieceWeights[Constants.MOVE_TOWARDS_RAIL]);
         }
 
-        // 3. Take down lower ranking opponent
-        // Add a penalty/bonus if there's a piece at our target we can beat
+        // EASY KILL: Take down lower ranking opponent
         if ((hisPiece > Constants.PIECE_UNKNOWN && myPiece > hisPiece)
                 || myPiece == Constants.PIECE_BOMB) {
             valuation += pieceWeights[Constants.BEAT_OPPONENT];
         }
 
-        // 5. Check how close are we from enemy flag
-        // APPROACH_ENEMY_FLAG
+        // CAPTURE MARCH: Give weights depending on how close are we from the
+        // enemy flag.
         if (player.getBoard()[58].getPiece() == Constants.PIECE_FLAG) {
             int distance = Utils.getDistanceBetweenPositions(to, 58);
             valuation += (15 - distance)
@@ -439,10 +417,8 @@ public class MoveGenerator {
                     * pieceWeights[Constants.APPROACH_ENEMY_FLAG];
         }
 
-        // 6. Check how close are we from enemy safe zones
-        // Give more weights if it is an enemy safe position
+        // SILENT ASSASIN: Check how close are we from enemy safe zones,
         // more weights as it gets closer to headquarters
-        // APPROACH_ENEMY_SAFE_ZONES
         if (Utils.isEnemyCampPosition(to)) {
             if (player.getBoard()[57].getPiece() == Constants.PIECE_FLAG) {
                 int distance = Utils.getDistanceBetweenPositions(to, 57);
@@ -461,8 +437,8 @@ public class MoveGenerator {
             }
         }
 
-        // 7. Check how close are we to our safe zones
-        // APPROACH_OUR_SAFE_ZONES
+        // HIDE IN BUNKERS: Give weights for pieces to move to our safe zones
+        // when we enemy is in our territory
         for (int j = 0; j < 30; j++) {
             if (player.getBoard()[j].getOwner() == player.getHisNumber()) {
                 if (Utils.isOurCampPosition(to)
@@ -471,28 +447,22 @@ public class MoveGenerator {
                             1))
                             +
                             myPiece + pieceWeights[Constants.APPROACH_OUR_SAFE_ZONES]);
-                    /*
-                     * if (myPiece == Constants.PIECE_FIELDMARSHAL) {
-                     * valuation += player.getPieceParams()
-                     * [Constants.APPROACH_OUR_SAFE_ZONES]; }
-                     */
                 }
                 break;
             }
         }
 
-        // Genocide General: Kill enemy front line
+        // GENOCIDE GENERAL: Kill enemy front line
         if (myPiece == Constants.PIECE_GENERAL
                 && fromYPos == 7
                 && toYPos == 7
                 && hisPiece != Constants.PIECE_EMPTY) {
             valuation += Constants.PIECE_GENERAL
                     * pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT];
-            // player.genocideKillCount++;
         }
 
-        // 10. Is enemy near our flag position?
-        // PROTECT_BASE
+        // SAVE OUR SOULS: If enemy in our territory, move pieces towards our
+        // headquarters. More weights to kill the intruder.
         for (int i = 0; i < 15; i++) {
             if (player.getBoard()[i].getOwner() == player.getHisNumber()) {
                 if (to < 15) {
@@ -506,46 +476,20 @@ public class MoveGenerator {
                                 .getBoard()[i].getPiece()
                         || myPiece == Constants.PIECE_BOMB)) {
                     // give more weights if our piece can kill intruder
-                    // KILL_INTRUDER
                     valuation += (myPiece * pieceWeights[Constants.KILL_INTRUDER]);
                 }
             }
         }
 
-        // 12. Lower rank player should capture headquarters if position is
-        // unknown
-        // BRAVE_PATRIOT
+        // BRAVE_PATRIOT: Lower rank player should capture headquarters 
+        // if position is unknown
         if (Utils.isEnemyHeadquarterPosition(to)) {
             valuation += (Constants.PIECE_FIELDMARSHAL - myPiece)
                     * pieceWeights[Constants.BRAVE_PATRIOT];
         }
 
-        /*
-         * // If we can move to the opponent's side if (to == bottomPosition)
-         * { valuation *= pieceWeights[Constants.MOVE_FORWARD]; } // If we can
-         * move to the right if (to == rightPosition) { valuation *=
-         * pieceWeights[Constants.MOVE_RIGHT]; } // If we can move to our own
-         * side if (to == topPosition) { valuation *=
-         * pieceWeights[Constants.MOVE_BACKWARD]; } // If we can move to the
-         * left if (to == leftPosition) { valuation *=
-         * pieceWeights[Constants.MOVE_LEFT]; } // Top left if (to ==
-         * bottomRightPosition) { valuation *=
-         * pieceWeights[Constants.MOVE_TOP_LEFT]; } // Top right if (to ==
-         * bottomLeftPosition) { valuation *=
-         * pieceWeights[Constants.MOVE_TOP_RIGHT]; } // Bottom left if (to ==
-         * topRightPosition) { valuation *=
-         * pieceWeights[Constants.MOVE_BOTTOM_LEFT]; } // Bottom right if (to
-         * == topLeftPosition) { valuation *=
-         * pieceWeights[Constants.MOVE_BOTTOM_RIGHT]; } if (toXPos < fromXPos
-         * - 1) { valuation *= pieceWeights[Constants.SLIDE_LEFT]; } if
-         * (toXPos > fromXPos + 1) { valuation *=
-         * pieceWeights[Constants.SLIDE_RIGHT]; } if (toYPos < fromYPos - 1) {
-         * valuation *= pieceWeights[Constants.SLIDE_TOP]; } if (toYPos >
-         * fromYPos + 1) { valuation *= pieceWeights[Constants.SLIDE_DOWN]; }
-         */
-        // 4. Take down enemy flag
-
-        // Our pieces are low, full attack
+        // THIS IS SPARTA: When our pieces are low, full attack, more weights
+        // to go forward
         if (player.getMyPiecesCount() < 13) {
             // If we can move to the opponent's side
             if (to == bottomPosition) {
@@ -561,11 +505,11 @@ public class MoveGenerator {
             }
             // Bottom left
             if (to == topRightPosition) {
-                valuation += pieceWeights[Constants.MOVE_BOTTOM_LEFT];
+                valuation += pieceWeights[Constants.MOVE_FORWARD_LEFT];
             }
             // Bottom right
             if (to == topLeftPosition) {
-                valuation += pieceWeights[Constants.MOVE_BOTTOM_RIGHT];
+                valuation += pieceWeights[Constants.MOVE_FORWARD_RIGHT];
             }
             if (toXPos < fromXPos - 1) {
                 valuation += pieceWeights[Constants.SLIDE_LEFT];
@@ -574,7 +518,7 @@ public class MoveGenerator {
                 valuation += pieceWeights[Constants.SLIDE_RIGHT];
             }
             if (toYPos > fromYPos + 1) {
-                valuation += pieceWeights[Constants.SLIDE_DOWN];
+                valuation += pieceWeights[Constants.SLIDE_FORWARD];
             }
         }
 

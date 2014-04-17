@@ -59,13 +59,13 @@ public class Constants {
    public static final int MOVE_LEFT = 5;
    public static final int MOVE_TOP_RIGHT = 6;
    public static final int MOVE_TOP_LEFT = 7;
-   public static final int MOVE_BOTTOM_RIGHT = 8;
-   public static final int MOVE_BOTTOM_LEFT = 9;
+   public static final int MOVE_FORWARD_RIGHT = 8;
+   public static final int MOVE_FORWARD_LEFT = 9;
    public static final int EXPLORATION_RATE = 10;
    public static final int SLIDE_LEFT = 11;
    public static final int SLIDE_RIGHT = 12;
    public static final int SLIDE_TOP = 13;
-   public static final int SLIDE_DOWN = 14;
+   public static final int SLIDE_FORWARD = 14;
    public static final int CAPTURE_FLAG = 15;
    public static final int APPROACH_ENEMY_FLAG = 16;
    public static final int APPROACH_ENEMY_SAFE_ZONES = 17;
