@@ -52,7 +52,7 @@ public class Player {
     private double[] pieceParams;
 
     public int genocideKillCount = 0;
-    
+
     private int myPiecesCount;
 
     public Player(int playerNumber, Double time) {
@@ -127,18 +127,18 @@ public class Player {
         pieceParams[Constants.BEAT_OPPONENT] = 3 * Constants.MULTIPLIER;
         pieceParams[Constants.MOVE_FORWARD] = 4 * Constants.MULTIPLIER;
         pieceParams[Constants.MOVE_RIGHT] = 2 * Constants.MULTIPLIER;
-//        pieceParams[Constants.MOVE_BACKWARD] = 0.5 * Constants.MULTIPLIER;
+        // pieceParams[Constants.MOVE_BACKWARD] = 0.5 * Constants.MULTIPLIER;
         pieceParams[Constants.MOVE_LEFT] = 2 * Constants.MULTIPLIER;
-//        pieceParams[Constants.MOVE_TOP_LEFT] = 4 * Constants.MULTIPLIER;
-//        pieceParams[Constants.MOVE_TOP_RIGHT] = 4 * Constants.MULTIPLIER;
+        // pieceParams[Constants.MOVE_TOP_LEFT] = 4 * Constants.MULTIPLIER;
+        // pieceParams[Constants.MOVE_TOP_RIGHT] = 4 * Constants.MULTIPLIER;
         pieceParams[Constants.MOVE_BOTTOM_LEFT] = 4 * Constants.MULTIPLIER;
         pieceParams[Constants.MOVE_BOTTOM_RIGHT] = 4 * Constants.MULTIPLIER;
-//        pieceParams[Constants.EXPLORATION_RATE] = 1 * Constants.MULTIPLIER;
+        // pieceParams[Constants.EXPLORATION_RATE] = 1 * Constants.MULTIPLIER;
         // TODO: CHeck adding for rail moves
         pieceParams[Constants.SLIDE_DOWN] = 4 * Constants.MULTIPLIER;
         pieceParams[Constants.SLIDE_LEFT] = 2 * Constants.MULTIPLIER;
         pieceParams[Constants.SLIDE_RIGHT] = 2 * Constants.MULTIPLIER;
-//        pieceParams[Constants.SLIDE_TOP] = 1 * Constants.MULTIPLIER;
+        // pieceParams[Constants.SLIDE_TOP] = 1 * Constants.MULTIPLIER;
         pieceParams[Constants.CAPTURE_FLAG] = 1000 * Constants.MULTIPLIER;
         pieceParams[Constants.APPROACH_ENEMY_FLAG] = 2 * Constants.MULTIPLIER;
         pieceParams[Constants.APPROACH_ENEMY_SAFE_ZONES] = 3
@@ -198,11 +198,11 @@ public class Player {
         Square movingSquare = board[fromSquare];
         Square fixedSquare = board[toSquare];
         // Check if we attacked wrong flag position
-        if (Utils.isEnemyHeadquarterPosition(toSquare)){
-            if(toSquare == 56) {
+        if (Utils.isEnemyHeadquarterPosition(toSquare)) {
+            if (toSquare == 56) {
                 board[58].setPiece(Constants.PIECE_FLAG);
                 board[58].setOwner(hisNumber);
-            } else if(toSquare == 58) {
+            } else if (toSquare == 58) {
                 board[56].setPiece(Constants.PIECE_FLAG);
                 board[56].setOwner(hisNumber);
             }
@@ -240,33 +240,37 @@ public class Player {
             putSquareOnBoard(movingSquare, toSquare);
         }
         if (Constants.RESULT_NONE == outcome) {
-          if (movingSquare.getOwner() != myNumber) {
-            updateOpponentIfEngineer(fromSquare, toSquare);
-          }
+            if (movingSquare.getOwner() != myNumber) {
+                updateOpponentIfEngineer(fromSquare, toSquare, movingSquare);
+            }
             putSquareOnBoard(new Square(), fromSquare);
             putSquareOnBoard(movingSquare, toSquare);
         }
     }
 
     /**
-     * Check if the opponent's piece moved has taken a turn and then update its rank in our config
+     * Check if the opponent's piece moved has taken a turn and then update
+     * its rank in our config
+     * 
      * @param fromSquare
      * @param toSquare
      */
-    private void updateOpponentIfEngineer(int fromSquare, int toSquare) {
-      int xPosFrom = Utils.getXPosition(fromSquare);
-      int xPosTo = Utils.getXPosition(toSquare);
-      int yPosFrom = Utils.getYPosition(fromSquare);
-      int yPosTo = Utils.getYPosition(toSquare);
-      
-      //  if rows and cols are different
-      if (xPosFrom != xPosTo && yPosFrom != yPosTo) {
-        //  if either of X and Y distances is > 1
-        if ((Math.abs(xPosFrom - xPosTo) > 1) || (Math.abs(yPosFrom - yPosTo) > 1)) {
-          //  update as an engineer
-          board[toSquare].setPiece(Constants.PIECE_ENGINEER);
+    private void updateOpponentIfEngineer(int fromSquare, int toSquare, Square movingSquare) {
+        int xPosFrom = Utils.getXPosition(fromSquare);
+        int xPosTo = Utils.getXPosition(toSquare);
+        int yPosFrom = Utils.getYPosition(fromSquare);
+        int yPosTo = Utils.getYPosition(toSquare);
+        int xdiff = Math.abs(xPosFrom - xPosTo);
+        int ydiff = Math.abs(yPosFrom - yPosTo);
+        
+        if (Utils.isOnRail(fromSquare) && Utils.isOnRail(toSquare)) {
+            if( ((xPosFrom == xPosTo) && ydiff > 0) ||
+                    ((yPosFrom == yPosTo) && xdiff > 0) ||
+                    (xPosFrom != xPosTo && yPosFrom != yPosTo)) {
+                movingSquare.setOwner(hisNumber);
+                movingSquare.setPiece(Constants.PIECE_ENGINEER);
+            }
         }
-      }
     }
 
     public int getGenocideKillCount() {
@@ -295,10 +299,13 @@ public class Player {
      * @param fixedSquare
      */
     private void updateOpponentPiece(Square movingSquare, Square fixedSquare) {
-        if (fixedSquare.getPiece() <= movingSquare.getPiece()) {
+        if (movingSquare.getPiece() == Constants.PIECE_LANDMINE) {
+            fixedSquare.setPiece(Constants.PIECE_ENGINEER);
+        } else if (fixedSquare.getPiece() <= movingSquare.getPiece()) {
             fixedSquare.setOwner(hisNumber);
             fixedSquare.setPiece(movingSquare.getPiece() + 1);
         }
+
     }
 
     public void putSquareOnBoard(Square square, int position) {

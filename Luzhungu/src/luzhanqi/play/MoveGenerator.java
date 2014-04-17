@@ -170,11 +170,7 @@ public class MoveGenerator {
             if (isDirectionCovered[target][direction]) {
                 break;
             }
-            /*
-             * System.out.println("Source: " +
-             * Utils.getPositionNameFromIndex(source) + " Target: " +
-             * Utils.getPositionNameFromIndex(target));
-             */
+
             updateBestMove(source, target);
             isDirectionCovered[target][direction] = true;
             // check for the target if the target is
@@ -184,34 +180,37 @@ public class MoveGenerator {
                 break;
             }
 
-            if (!Utils.isDirectionAvailable(direction, target)) {
-                break;
-            }
-            target = Utils.getNextPosition(direction, target);
-            if (isNextOnRailInValid(target)) {
-                break;
-            }
             // check for the direction
             // if not available
             // update move for rail in
             // every other direction
             if (Utils.isTargetAtIntersection(target)) {
                 for (int i = 0; i < 4; i++) {
-                    direction = i;
-                    if (Utils.isDirectionAvailable(direction, target)) {
-                        updateBestMoveOnRailForEngineer(source,
-                                direction, target, isDirectionCovered);
+                    int newDirection = i;
+                    if(!Utils.isDirectionAvailable(newDirection, target)){
+                        continue;
                     }
+                    int newTarget = Utils.getNextPosition(newDirection,
+                            target);
+                    if (isNextOnRailInValid(newTarget)) {
+                        continue;
+                    }
+                    if (Utils.isDirectionAvailable(newDirection, newTarget)) {
+                        updateBestMoveOnRailForEngineer(source,
+                                newDirection, newTarget, isDirectionCovered);
+                    }
+                }
+            } else {
+                if (!Utils.isDirectionAvailable(direction, target)) {
+                    break;
+                }
+                target = Utils.getNextPosition(direction, target);
+                if (isNextOnRailInValid(target)) {
+                    break;
                 }
             }
         }
     }
-
-    /*
-     * // Swapnil public void getEngineerMoves (int source) { if
-     * (Utils.isCornerOnRail(source)) { // Check only 4 directions } if
-     * (Utils) }
-     */
 
     /**
      * This method evaluates a move against bestMove
@@ -310,7 +309,7 @@ public class MoveGenerator {
         }
 
         // NO SUICIDES: Do not attack the piece we know is of higher rank
-        if (myPiece < hisPiece) {
+        if (myPiece < hisPiece && myPiece != Constants.PIECE_BOMB) {
             return valuation;
         }
 
@@ -323,32 +322,87 @@ public class MoveGenerator {
         if (Utils.isEnemyCampPosition(from) && toYPos < fromYPos) {
             return valuation;
         }
-        
+
+        // We dont protect grenades
+        if (myPiece == Constants.PIECE_BOMB && Utils.isOurCampPosition(to)) {
+            return valuation;
+        }
+
         // CAPTURE_FLAG
-        if (Constants.PIECE_FLAG == hisPiece) {
+        if (player.getBoard()[56].getPiece() == Constants.PIECE_FLAG
+                && to == 56) {
+            return Double.POSITIVE_INFINITY;
+        } else if (player.getBoard()[58].getPiece() == Constants.PIECE_FLAG
+                && to == 58) {
+            return Double.POSITIVE_INFINITY;
+        } else if (to == 56 || to == 58) {
             return Double.POSITIVE_INFINITY;
         }
 
+        // Capture opponent marshall
+        if (myPiece == Constants.PIECE_BOMB
+                && hisPiece == Constants.PIECE_FIELDMARSHAL) {
+            return Double.MAX_VALUE / 2;
+        }
+        
+        // Moving to a flag position
+        
+
+        // 8. Our engineer takes out the land mines
+        // DEFUSE_MINE
+        if (player.getBoard()[from].getPiece() == Constants.PIECE_ENGINEER
+                // && !player.getHasMoved()[to]
+                // && player.getBoard()[to].getPiece() ==
+                // Constants.PIECE_UNKNOWN
+                && to > 49) {
+            /*
+             * valuation += (Constants.PIECE_FIELDMARSHAL *
+             * pieceWeights[Constants.DEFUSE_MINE]); if
+             * (!player.getHasMoved()[to]) { valuation +=
+             * (Constants.PIECE_FIELDMARSHAL *
+             * pieceWeights[Constants.DEFUSE_MINE]); }
+             */
+            /*
+             * System.out.println("Defuse Mine");
+             * System.out.println("Valuation: " + (Double.POSITIVE_INFINITY -
+             * 100));
+             */
+            if (player.getBoard()[56].getPiece() == Constants.PIECE_FLAG
+                    && to == 51) {
+                return Double.MAX_VALUE / 2;
+            } else if (player.getBoard()[58].getPiece() == Constants.PIECE_FLAG
+                    && to == 53) {
+                return Double.MAX_VALUE / 2;
+            } else if (to == 51 || to == 53) {
+                return Double.MAX_VALUE / 3;
+            } else if (hisPiece != Constants.PIECE_EMPTY && myPiece >= hisPiece){
+                return Double.MAX_VALUE / 4;
+            }
+        }
+        
+        // Moving in front of flag
+        if (player.getBoard()[56].getPiece() == Constants.PIECE_FLAG
+                && to == 51) {
+            return Double.MAX_VALUE / 5;
+        } else if (player.getBoard()[58].getPiece() == Constants.PIECE_FLAG
+                && to == 53) {
+            return Double.MAX_VALUE / 5;
+        } else if (to == 51 || to == 53) {
+            return Double.MAX_VALUE / 6;
+        }
 
         // 2. Dare to take down unknown opponent
         // The condition when we are going in the last two rows, check if the
         // piece has moved, more chances that its not a bomb
         if (hisPiece == Constants.PIECE_UNKNOWN) {
-            if (player.getHasMoved()[to] || myPiece == Constants.PIECE_BOMB) {
+            if (myPiece == Constants.PIECE_BOMB) {
                 valuation += (myPiece * pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT]);
             }
             // Add weight depending on how its closer to enemy flag
-            if (fromYPos == 10 && Utils.isCampPosition(from)) {
-                /*
-                 * if(!player.getHasMoved()[to] && myPiece ==
-                 * Constants.PIECE_ENGINEER) { }
-                 */
-            } else {
-                int distanceFromFlag = Utils.getDistanceBetweenPositions(
-                        fromYPos, 12);
-                valuation += ((myPiece + distanceFromFlag) *
-                        pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT]);
-            }
+            int distanceFromFlag = Utils.getDistanceBetweenPositions(
+                    fromYPos, 12);
+            valuation += (13 - distanceFromFlag) *
+                    pieceWeights[Constants.ATTACK_UNKNOWN_OPPONENT];
         }
 
         // Moving towards rail roads
@@ -409,14 +463,24 @@ public class MoveGenerator {
 
         // 7. Check how close are we to our safe zones
         // APPROACH_OUR_SAFE_ZONES
-        if (Utils.isOurCampPosition(to) && myPiece != Constants.PIECE_BOMB) {
-            valuation += ((15 - Utils.getDistanceBetweenPositions(to, 1)) +
-                    myPiece + pieceWeights[Constants.APPROACH_OUR_SAFE_ZONES]);
-            /*
-             * if (myPiece == Constants.PIECE_FIELDMARSHAL) { valuation +=
-             * player.getPieceParams() [Constants.APPROACH_OUR_SAFE_ZONES]; }
-             */
+        for (int j = 0; j < 30; j++) {
+            if (player.getBoard()[j].getOwner() == player.getHisNumber()) {
+                if (Utils.isOurCampPosition(to)
+                        && myPiece != Constants.PIECE_BOMB) {
+                    valuation += ((15 - Utils.getDistanceBetweenPositions(to,
+                            1))
+                            +
+                            myPiece + pieceWeights[Constants.APPROACH_OUR_SAFE_ZONES]);
+                    /*
+                     * if (myPiece == Constants.PIECE_FIELDMARSHAL) {
+                     * valuation += player.getPieceParams()
+                     * [Constants.APPROACH_OUR_SAFE_ZONES]; }
+                     */
+                }
+                break;
+            }
         }
+
         // Genocide General: Kill enemy front line
         if (myPiece == Constants.PIECE_GENERAL
                 && fromYPos == 7
@@ -433,8 +497,8 @@ public class MoveGenerator {
             if (player.getBoard()[i].getOwner() == player.getHisNumber()) {
                 if (to < 15) {
                     // give more weights to pieces that are going to defend
-                    valuation += (15 - Utils.getDistanceBetweenPositions(to,
-                            1)) + myPiece
+                    valuation += ((15 - Utils.getDistanceBetweenPositions(to,
+                            1)) + myPiece)
                             * pieceWeights[Constants.PROTECT_BASE];
                 }
                 if (to == i
@@ -443,7 +507,7 @@ public class MoveGenerator {
                         || myPiece == Constants.PIECE_BOMB)) {
                     // give more weights if our piece can kill intruder
                     // KILL_INTRUDER
-                    valuation += pieceWeights[Constants.KILL_INTRUDER];
+                    valuation += (myPiece * pieceWeights[Constants.KILL_INTRUDER]);
                 }
             }
         }
@@ -454,19 +518,6 @@ public class MoveGenerator {
         if (Utils.isEnemyHeadquarterPosition(to)) {
             valuation += (Constants.PIECE_FIELDMARSHAL - myPiece)
                     * pieceWeights[Constants.BRAVE_PATRIOT];
-        }
-
-        // 8. Our engineer takes out the land mines
-        // DEFUSE_MINE
-        if (player.getBoard()[from].getPiece() == Constants.PIECE_ENGINEER
-                // && !player.getHasMoved()[to]
-                // && player.getBoard()[to].getPiece() ==
-                // Constants.PIECE_UNKNOWN
-                && to > 49) {
-            valuation += (Constants.PIECE_FIELDMARSHAL * pieceWeights[Constants.DEFUSE_MINE]);
-            if (!player.getHasMoved()[to]) {
-                valuation += (Constants.PIECE_FIELDMARSHAL * pieceWeights[Constants.DEFUSE_MINE]);
-            }
         }
 
         /*

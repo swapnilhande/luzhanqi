@@ -703,57 +703,36 @@ public class Utils {
      */
     public static int[] getInitialSetup() {
         int[] pieces = {
-                /*
-                 * Constants.PIECE_LIEUTENANT, // A1 Constants.PIECE_FLAG, //
-                 * B1 Constants.PIECE_LIEUTENANT, // C1
-                 * Constants.PIECE_LIEUTENANT, // D1 Constants.PIECE_ENGINEER,
-                 * // E1 Constants.PIECE_LANDMINE, // A2
-                 * Constants.PIECE_LANDMINE, // B2 Constants.PIECE_LANDMINE,
-                 * // C2 Constants.PIECE_CAPTAIN, // D2 Constants.PIECE_MAJOR,
-                 * // E2 Constants.PIECE_CAPTAIN, // A3 Constants.PIECE_EMPTY,
-                 * // B3 Constants.PIECE_FIELDMARSHAL, // C3
-                 * Constants.PIECE_EMPTY, // D3 Constants.PIECE_CAPTAIN, // E3
-                 * Constants.PIECE_GENERAL, // A4 Constants.PIECE_ENGINEER, //
-                 * B4 Constants.PIECE_EMPTY, // C4 Constants.PIECE_ENGINEER,
-                 * // D4 Constants.PIECE_BOMB, // E4 Constants.PIECE_BOMB,//
-                 * A5 Constants.PIECE_EMPTY, // B5
-                 * Constants.PIECE_MAJORGENERAL, // C5 Constants.PIECE_EMPTY,
-                 * // D5 Constants.PIECE_BRIGADIERGENERAL, // E5
-                 * Constants.PIECE_BRIGADIERGENERAL, // A6
-                 * Constants.PIECE_COLONEL,// B6 Constants.PIECE_MAJOR, // C6
-                 * Constants.PIECE_COLONEL, // D6 Constants.PIECE_MAJORGENERAL
-                 * // E6
-                 */
-                Constants.PIECE_LANDMINE, // A1
-                Constants.PIECE_FLAG, // B1
-                Constants.PIECE_LIEUTENANT, // C1
-                Constants.PIECE_LIEUTENANT, // D1
                 Constants.PIECE_LIEUTENANT, // E1
-                Constants.PIECE_LANDMINE, // A2
-                Constants.PIECE_LANDMINE, // B2
-                Constants.PIECE_FIELDMARSHAL, // C2
-                Constants.PIECE_CAPTAIN, // D2
-                Constants.PIECE_MAJOR, // E2
-                Constants.PIECE_BRIGADIERGENERAL, // A3
-                Constants.PIECE_EMPTY, // B3
-                Constants.PIECE_COLONEL, // C3
+                Constants.PIECE_FLAG, // D1
+                Constants.PIECE_LIEUTENANT, // C1
+                Constants.PIECE_LIEUTENANT, // B1
+                Constants.PIECE_CAPTAIN, // A1
+                Constants.PIECE_LANDMINE, // E2
+                Constants.PIECE_LANDMINE, // D2
+                Constants.PIECE_LANDMINE, // C2
+                Constants.PIECE_COLONEL, // B2
+                Constants.PIECE_ENGINEER, // A2
+                Constants.PIECE_MAJORGENERAL, // E3
                 Constants.PIECE_EMPTY, // D3
-                Constants.PIECE_ENGINEER, // E3
-                Constants.PIECE_MAJORGENERAL, // A4
-                Constants.PIECE_ENGINEER, // B4
-                Constants.PIECE_EMPTY, // C4
+                Constants.PIECE_FIELDMARSHAL, // C3
+                Constants.PIECE_EMPTY, // B3
+                Constants.PIECE_MAJOR, // A3
+                Constants.PIECE_BRIGADIERGENERAL, // E4
                 Constants.PIECE_CAPTAIN, // D4
-                Constants.PIECE_BOMB, // E4
-                Constants.PIECE_BOMB,// A5
-                Constants.PIECE_EMPTY, // B5
-                Constants.PIECE_BRIGADIERGENERAL, // C5
+                Constants.PIECE_EMPTY, // C4
+                Constants.PIECE_CAPTAIN, // B4
+                Constants.PIECE_BOMB, // A4
+                Constants.PIECE_BOMB,// E5
                 Constants.PIECE_EMPTY, // D5
-                Constants.PIECE_CAPTAIN, // E5
-                Constants.PIECE_GENERAL, // A6
-                Constants.PIECE_ENGINEER,// B6
-                Constants.PIECE_MAJORGENERAL, // C6
-                Constants.PIECE_COLONEL, // D6
-                Constants.PIECE_MAJOR // E6
+                Constants.PIECE_MAJORGENERAL, // C5
+                Constants.PIECE_EMPTY, // B5
+                Constants.PIECE_COLONEL, // A5
+                Constants.PIECE_GENERAL, // E6
+                Constants.PIECE_ENGINEER,// D6
+                Constants.PIECE_BRIGADIERGENERAL, // C6
+                Constants.PIECE_ENGINEER, // B6
+                Constants.PIECE_MAJOR // A6
         };
         return pieces;
     }
