@@ -240,9 +240,33 @@ public class Player {
             putSquareOnBoard(movingSquare, toSquare);
         }
         if (Constants.RESULT_NONE == outcome) {
+          if (movingSquare.getOwner() != myNumber) {
+            updateOpponentIfEngineer(fromSquare, toSquare);
+          }
             putSquareOnBoard(new Square(), fromSquare);
             putSquareOnBoard(movingSquare, toSquare);
         }
+    }
+
+    /**
+     * Check if the opponent's piece moved has taken a turn and then update its rank in our config
+     * @param fromSquare
+     * @param toSquare
+     */
+    private void updateOpponentIfEngineer(int fromSquare, int toSquare) {
+      int xPosFrom = Utils.getXPosition(fromSquare);
+      int xPosTo = Utils.getXPosition(toSquare);
+      int yPosFrom = Utils.getYPosition(fromSquare);
+      int yPosTo = Utils.getYPosition(toSquare);
+      
+      //  if rows and cols are different
+      if (xPosFrom != xPosTo && yPosFrom != yPosTo) {
+        //  if either of X and Y distances is > 1
+        if ((Math.abs(xPosFrom - xPosTo) > 1) || (Math.abs(yPosFrom - yPosTo) > 1)) {
+          //  update as an engineer
+          board[toSquare].setPiece(Constants.PIECE_ENGINEER);
+        }
+      }
     }
 
     public int getGenocideKillCount() {
