@@ -262,12 +262,15 @@ public class Player {
         if (movingSquare.getPiece() == Constants.PIECE_LANDMINE) {
             fixedSquare.setPiece(Constants.PIECE_ENGINEER);
         } else if (fixedSquare.getPiece() <= movingSquare.getPiece()) {
-//            fixedSquare.setOwner(hisNumber);
             fixedSquare.setPiece(movingSquare.getPiece() + 1);
         }
-
     }
 
+    /**
+     * Puts the given square at the given location
+     * @param square
+     * @param position
+     */
     public void putSquareOnBoard(Square square, int position) {
         board[position] = square;
         canMove[position] = new boolean[8];
@@ -283,6 +286,12 @@ public class Player {
         }
     }
 
+    /**
+     * Updates the possible moves in the given position and 
+     * the given direction
+     * @param thisPosition
+     * @param direction
+     */
     public void updatePossibleMovesAfterMove(int thisPosition, int direction) {
         if (Utils.isDirectionAvailable(direction, thisPosition)) {
             int nextPosition = Utils.getNextPosition(direction, thisPosition);
@@ -292,6 +301,13 @@ public class Player {
         }
     }
 
+    /**
+     * Change the can moves for the given position in the given direction
+     * @param thisPosition
+     * @param direction
+     * @param nextPosition
+     * @param oppDirection
+     */
     private void changeCanMoveInDirection(int thisPosition, int direction,
             int nextPosition, int oppDirection) {
         if (board[thisPosition].getOwner() == myNumber
@@ -306,6 +322,12 @@ public class Player {
         }
     }
 
+    /**
+     * Updates the given positions move status in the given direction.
+     * @param thisPosition
+     * @param direction
+     * @param nextPosition
+     */
     private void modifyMyPieceMoveStatus(int thisPosition, int direction,
             int nextPosition) {
         if (board[nextPosition].getPiece() == Constants.PIECE_EMPTY) {
@@ -332,7 +354,6 @@ public class Player {
 
     /**
      * If this player is 0, return 1 else return 0
-     * 
      * @param playerNumber
      * @return other player's number
      */
