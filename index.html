@@ -34,7 +34,95 @@
         <h1>
 <a name="readme" class="anchor" href="#readme"><span class="octicon octicon-link"></span></a>README</h1>
 
-<p>Luzhanqi implementation in Java. The program parses referee programs commands, maintains board state and evaluates the best possible move to win the game.</p>
+<p><a href="http://en.wikipedia.org/wiki/Luzhanqi">Luzhanqi</a> implementation in Java. The program parses referee programs commands, maintains board state and evaluates the best possible move to win the game.<br>
+The program works on the referee programs command on standard input. </p>
+
+<hr><h5>
+<a name="message-by-game-playing-program-to-the-referee" class="anchor" href="#message-by-game-playing-program-to-the-referee"><span class="octicon octicon-link"></span></a>Message by game-playing program to the referee</h5>
+
+<pre><code>- initial configuration  
+- move  
+- resign  
+
+Syntax:
+&lt;mg_p2r&gt;   ::=  &lt;initial&gt;  
+            |  &lt;move&gt;  
+            |  &lt;resign&gt;  
+&lt;initial&gt;   ::=  ( &lt;inits&gt; )
+&lt;inits&gt;     ::=  
+            |  &lt;init&gt; &lt;inits&gt;
+&lt;init&gt;      ::=  ( &lt;position&gt; &lt;piece&gt; )
+&lt;position&gt;  ::=  A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8 | A9 | A10 | A11 | A12
+            |  B1 | B2 | B3 | B4 | B5 | B6 | B7 | B8 | B9 | B10 | B11 | B12
+            |  C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8 | C9 | C10 | C11 | C12
+            |  D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 | D9 | D10 | D11 | D12
+            |  E1 | E2 | E3 | E4 | E5 | E6 | E7 | E8 | E9 | E10 | E11 | E12
+&lt;piece&gt;     ::=  F | L | B | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+&lt;move&gt;      ::=  ( &lt;position&gt; &lt;position&gt; )
+&lt;resign&gt;    ::=  (resign)
+</code></pre>
+
+<h5>
+<a name="every-kind-of-message-the-referee-might-have-to-send-to-a-game-playing-program" class="anchor" href="#every-kind-of-message-the-referee-might-have-to-send-to-a-game-playing-program"><span class="octicon octicon-link"></span></a>Every kind of message the referee might have to send to a game-playing program</h5>
+
+<pre><code>- initial player assignment and time-per-move limit
+- end of game result
+- illegal move
+- result of a move
+- indicate the start of a player's turn
+- location of a player's flag
+
+Syntax:
+&lt;msg_r2p&gt;   ::=  &lt;msg0&gt;
+            |  &lt;game_end&gt;
+            |  &lt;illegal&gt;
+            |  &lt;turn&gt;
+            |  &lt;outcome&gt;
+            |  &lt;flag&gt;
+&lt;msg0&gt;      ::=  (init &lt;which&gt; time/move &lt;seconds&gt;)
+&lt;game_end&gt;  ::=  (end &lt;winner&gt;)
+&lt;illegal&gt;   ::=  (illegal &lt;move&gt;)
+&lt;turn&gt;      ::=  (go &lt;which&gt;)
+&lt;outcome&gt;   ::=  (outcome &lt;result&gt;)
+&lt;flag&gt;      ::=  (flag &lt;which&gt; &lt;position&gt;)
+&lt;result&gt;    ::=  &lt;move&gt;
+            |  &lt;compare&gt; &lt;move&gt;
+ &lt;compare&gt;   ::=  &lt;
+            |  &gt;
+            |  =
+&lt;winner&gt;    ::=  0
+            |  &lt;which&gt;
+&lt;which&gt;     ::=  1
+            |  2
+&lt;seconds&gt;   ::=  &lt;digits&gt;
+            |  &lt;digits&gt; . &lt;digits&gt;
+&lt;digits&gt;    ::=  &lt;digit&gt;
+            |  &lt;digit&gt; &lt;digits&gt;
+&lt;digit&gt;     ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
+&lt;position&gt;  ::=  A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8 | A9 | A10 | A11 | A12
+            |  B1 | B2 | B3 | B4 | B5 | B6 | B7 | B8 | B9 | B10 | B11 | B12
+            |  C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8 | C9 | C10 | C11 | C12
+            |  D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 | D9 | D10 | D11 | D12
+            |  E1 | E2 | E3 | E4 | E5 | E6 | E7 | E8 | E9 | E10 | E11 | E12
+&lt;piece&gt;     ::=  F | L | B | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+&lt;move&gt;      ::=  ( &lt;position&gt; &lt;position&gt; )
+</code></pre>
+
+<h5>
+<a name="help" class="anchor" href="#help"><span class="octicon octicon-link"></span></a>Help</h5>
+
+<pre><code>Symbol      Purpose
+------      -------
+&lt;initial&gt;   send the player's initial board config to the referee
+&lt;move&gt;      send the player's move to the referee
+&lt;resign&gt;    the player forfeits the game
+&lt;msg0&gt;      assign a player number and the time-per-move limit
+&lt;game_end&gt;  indicate that the game is over, along with who won
+&lt;illegal&gt;   indicate that the last received move is not valid
+&lt;turn&gt;      tell the player it is their turn to move
+&lt;outcome&gt;   indicate the outcome of the last move
+&lt;flag&gt;      reveals the position of a player's flag
+</code></pre>
       </section>
     </div>
 
